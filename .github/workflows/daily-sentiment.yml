@@ -1,0 +1,351 @@
+# ============================================================================
+# Nansen Twitter Sentiment Monitor - GitHub Actions Workflow
+# ============================================================================
+#
+# This workflow runs automated sentiment analysis daily and posts results to Slack.
+#
+# SCHEDULE:
+# - Runs daily at 9:00 AM UTC (configurable via cron expression)
+# - Can be triggered manually via GitHub UI
+# - Runs on push to main (with --dry-run flag for testing)
+#
+# SETUP INSTRUCTIONS:
+# 1. Go to: Settings → Secrets and variables → Actions → New repository secret
+# 2. Add the following secrets:
+#    - X_API_BEARER_TOKEN: Your Twitter/X API bearer token
+#    - ANTHROPIC_API_KEY: Your Claude API key
+#    - SLACK_WEBHOOK_URL: Your Slack webhook URL
+#
+# MANUAL TRIGGER:
+# 1. Go to: Actions tab → Daily Sentiment Analysis
+# 2. Click "Run workflow" → Select branch → Run
+#
+# VIEW LOGS:
+# - Actions tab → Select workflow run → Click job name
+# - Download artifacts: Logs available for 30 days
+#
+# TROUBLESHOOTING:
+# - Check secrets are set correctly
+# - Verify API rate limits not exceeded
+# - Review uploaded log artifacts
+# - Check Slack webhook is active
+#
+# ============================================================================
+
+name: Daily Sentiment Analysis
+
+# ============================================================================
+# Workflow Triggers
+# ============================================================================
+on:
+  # Scheduled run: Daily at 9:00 AM UTC
+  # Adjust cron expression as needed (https://crontab.guru/)
+  # Format: minute hour day month day-of-week
+  schedule:
+    - cron: '0 9 * * *'  # Daily at 9 AM UTC
+
+  # Manual trigger via GitHub UI
+  # Go to Actions tab → Daily Sentiment Analysis → Run workflow
+  workflow_dispatch:
+    inputs:
+      hours:
+        description: 'Hours to look back'
+        required: false
+        default: '24'
+      dry_run:
+        description: 'Dry run mode (true/false)'
+        required: false
+        default: 'false'
+
+  # Auto-run on push to main (testing only)
+  # Uses --dry-run flag to prevent actual Slack notifications
+  push:
+    branches: [ main ]
+    paths:
+      - '**.py'
+      - 'requirements.txt'
+      - 'config/config.yaml'
+      - '.github/workflows/daily-sentiment.yml'
+
+# ============================================================================
+# Concurrency Control
+# ============================================================================
+# Prevent multiple simultaneous runs
+concurrency:
+  group: sentiment-analysis
+  cancel-in-progress: true
+
+# ============================================================================
+# Permissions (Minimal for security)
+# ============================================================================
+permissions:
+  contents: read  # Read-only access to repository
+
+# ============================================================================
+# Environment Variables
+# ============================================================================
+env:
+  PYTHONUNBUFFERED: 1  # Real-time log output
+  TZ: UTC              # Consistent timezone
+
+# ============================================================================
+# Jobs
+# ============================================================================
+jobs:
+  sentiment-analysis:
+    name: Run Sentiment Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 15  # Prevent hanging jobs
+
+    steps:
+      # ======================================================================
+      # Step 1: Checkout Repository
+      # ======================================================================
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1  # Shallow clone for speed
+
+      # ======================================================================
+      # Step 2: Set up Python
+      # ======================================================================
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'  # Cache pip packages automatically
+
+      # ======================================================================
+      # Step 3: Cache Dependencies (Manual - for more control)
+      # ======================================================================
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # ======================================================================
+      # Step 4: Install Dependencies
+      # ======================================================================
+      - name: Install dependencies
+        run: |
+          echo "📦 Installing Python dependencies..."
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          echo "✅ Dependencies installed"
+
+      # ======================================================================
+      # Step 5: Create Required Directories
+      # ======================================================================
+      - name: Create logs directory
+        run: |
+          mkdir -p logs
+          mkdir -p config
+          echo "✅ Directories created"
+
+      # ======================================================================
+      # Step 6: Validate Environment
+      # ======================================================================
+      - name: Validate configuration
+        run: |
+          echo "🔍 Validating configuration..."
+
+          # Check if config file exists
+          if [ ! -f "config/config.yaml" ]; then
+            echo "❌ config/config.yaml not found"
+            exit 1
+          fi
+
+          # Check if main.py exists
+          if [ ! -f "main.py" ]; then
+            echo "❌ main.py not found"
+            exit 1
+          fi
+
+          echo "✅ Configuration validated"
+
+      # ======================================================================
+      # Step 7: Run Sentiment Analysis
+      # ======================================================================
+      - name: Run sentiment analysis
+        id: analysis
+        continue-on-error: true  # Continue to artifact upload even on error
+        env:
+          # API Credentials from GitHub Secrets
+          X_API_BEARER_TOKEN: ${{ secrets.X_API_BEARER_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+          # Optional: Slack user mention for urgent alerts
+          SLACK_MENTION_USER_ID: ${{ secrets.SLACK_MENTION_USER_ID }}
+
+          # Logging configuration
+          LOG_LEVEL: INFO
+        run: |
+          echo "🚀 Starting sentiment analysis..."
+          echo "Event: ${{ github.event_name }}"
+          echo "Branch: ${{ github.ref_name }}"
+
+          # Determine run mode
+          if [ "${{ github.event_name }}" == "push" ]; then
+            # Dry run for push events (testing)
+            echo "🏃 Running in DRY RUN mode (push event)"
+            python main.py --dry-run --verbose
+          elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            # Manual trigger with custom parameters
+            HOURS="${{ github.event.inputs.hours }}"
+            DRY_RUN="${{ github.event.inputs.dry_run }}"
+
+            echo "⏰ Hours: ${HOURS:-24}"
+            echo "🏃 Dry run: ${DRY_RUN:-false}"
+
+            if [ "${DRY_RUN}" == "true" ]; then
+              python main.py --hours "${HOURS:-24}" --dry-run --verbose
+            else
+              python main.py --hours "${HOURS:-24}" --verbose
+            fi
+          else
+            # Scheduled run (production)
+            echo "📅 Running scheduled analysis"
+            python main.py --verbose
+          fi
+
+      # ======================================================================
+      # Step 8: Run Tests (Optional)
+      # ======================================================================
+      - name: Run tests
+        if: hashFiles('tests/*.py') != ''  # Only if tests exist
+        continue-on-error: true
+        run: |
+          echo "🧪 Running tests..."
+          python -m pytest tests/ -v --tb=short || echo "⚠️ Some tests failed"
+
+      # ======================================================================
+      # Step 9: Upload Logs as Artifacts
+      # ======================================================================
+      - name: Upload logs and reports
+        if: always()  # Always upload, even on failure
+        uses: actions/upload-artifact@v3
+        with:
+          name: sentiment-logs-${{ github.run_number }}
+          path: |
+            logs/
+            *.log
+          retention-days: 30
+          if-no-files-found: warn
+
+      # ======================================================================
+      # Step 10: Generate Summary
+      # ======================================================================
+      - name: Generate job summary
+        if: always()
+        run: |
+          echo "## 📊 Sentiment Analysis Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Run Information:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Trigger: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Time: $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "logs/sentiment_monitor.log" ]; then
+            echo "**Log Excerpt:**" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            tail -n 20 logs/sentiment_monitor.log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📦 Logs available in artifacts for 30 days" >> $GITHUB_STEP_SUMMARY
+
+      # ======================================================================
+      # Step 11: Notify on Failure
+      # ======================================================================
+      - name: Notify on failure
+        if: failure() && github.event_name != 'push'  # Don't notify on push failures
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          echo "📢 Sending failure notification to Slack..."
+
+          # Build failure message
+          MESSAGE="❌ *Sentiment Analysis Workflow Failed*
+
+          *Details:*
+          • Trigger: ${{ github.event_name }}
+          • Branch: ${{ github.ref_name }}
+          • Commit: \`${{ github.sha }}\`
+          • Time: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+
+          *Actions:*
+          • View logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          • Check API rate limits
+          • Verify secrets are set correctly
+
+          *Next Steps:*
+          1. Review error logs in artifacts
+          2. Check API credentials
+          3. Verify rate limits not exceeded"
+
+          # Send to Slack
+          curl -X POST "${SLACK_WEBHOOK_URL}" \
+            -H 'Content-Type: application/json' \
+            -d "{\"text\":\"${MESSAGE}\"}" \
+            || echo "⚠️ Failed to send Slack notification"
+
+      # ======================================================================
+      # Step 12: Cleanup (Optional)
+      # ======================================================================
+      - name: Cleanup
+        if: always()
+        run: |
+          echo "🧹 Cleaning up temporary files..."
+          # Remove sensitive data if any
+          rm -f .env 2>/dev/null || true
+          echo "✅ Cleanup complete"
+
+# ============================================================================
+# Notes:
+# ============================================================================
+#
+# SECRETS REQUIRED:
+# - X_API_BEARER_TOKEN: Twitter/X API bearer token
+# - ANTHROPIC_API_KEY: Claude API key
+# - SLACK_WEBHOOK_URL: Slack incoming webhook URL
+# - SLACK_MENTION_USER_ID (optional): User ID for urgent mentions
+#
+# TO ADD SECRETS:
+# 1. Go to repository Settings
+# 2. Secrets and variables → Actions
+# 3. New repository secret
+# 4. Add name and value
+# 5. Save
+#
+# SCHEDULE ADJUSTMENT:
+# - Edit cron expression in 'schedule' section
+# - Use https://crontab.guru/ to validate
+# - Examples:
+#   - '0 */6 * * *'  → Every 6 hours
+#   - '0 9,17 * * *' → 9 AM and 5 PM UTC
+#   - '0 9 * * 1-5'  → 9 AM on weekdays only
+#
+# MANUAL TESTING:
+# 1. Push code changes to test with --dry-run
+# 2. Use workflow_dispatch for full production test
+# 3. Check artifacts for detailed logs
+#
+# MONITORING:
+# - View run history in Actions tab
+# - Set up notifications: Settings → Notifications → Actions
+# - Download artifacts for detailed logs
+#
+# COST MANAGEMENT:
+# - Review Claude API usage in Anthropic console
+# - Check Twitter API rate limits
+# - Adjust schedule frequency if needed
+# - Use --dry-run for testing to avoid costs
+#
+# ============================================================================

@@ -1,0 +1,56 @@
+[
+  {
+    "tweet_id": "1000001",
+    "text": "Just used @nansen_ai mobile app to catch a whale trade! This is game changing 🚀",
+    "author_username": "crypto_trader",
+    "author_name": "Crypto Trader",
+    "created_at": "2025-01-09T10:00:00Z",
+    "engagement": {
+      "likes": 45,
+      "retweets": 12,
+      "replies": 8,
+      "quotes": 3,
+      "total": 68
+    },
+    "url": "https://twitter.com/crypto_trader/status/1000001",
+    "is_verified": true,
+    "author_followers": 25000,
+    "mentioned_keywords": ["nansen_ai", "mobile"]
+  },
+  {
+    "tweet_id": "1000002",
+    "text": "@nansen_ai app keeps crashing, can't access my dashboard",
+    "author_username": "frustrated_user",
+    "author_name": "Frustrated User",
+    "created_at": "2025-01-09T09:30:00Z",
+    "engagement": {
+      "likes": 15,
+      "retweets": 3,
+      "replies": 7,
+      "quotes": 1,
+      "total": 26
+    },
+    "url": "https://twitter.com/frustrated_user/status/1000002",
+    "is_verified": false,
+    "author_followers": 1200,
+    "mentioned_keywords": ["nansen_ai", "app"]
+  },
+  {
+    "tweet_id": "1000003",
+    "text": "Does @nansen_ai support Base chain? Looking to analyze some trades",
+    "author_username": "curious_dev",
+    "author_name": "Curious Developer",
+    "created_at": "2025-01-09T09:00:00Z",
+    "engagement": {
+      "likes": 8,
+      "retweets": 2,
+      "replies": 4,
+      "quotes": 0,
+      "total": 14
+    },
+    "url": "https://twitter.com/curious_dev/status/1000003",
+    "is_verified": false,
+    "author_followers": 3400,
+    "mentioned_keywords": ["nansen_ai"]
+  }
+]

@@ -1,0 +1,215 @@
+# ============================================================================
+# Nansen Twitter Sentiment Monitor - Configuration
+# ============================================================================
+#
+# This file contains all configuration settings for the sentiment monitoring
+# system. Adjust these settings based on your monitoring needs and API limits.
+#
+# Documentation: See README.md for detailed setup instructions
+# ============================================================================
+
+# ============================================================================
+# Twitter/X API Configuration
+# ============================================================================
+twitter:
+  # Keywords to search for (OR logic applied)
+  # The search will find tweets containing ANY of these keywords
+  # Use quotes for multi-word phrases
+  search_keywords:
+    - "@nansen_ai"          # Direct mentions
+    - "nansen mobile"       # Mobile app discussions
+    - "nansen trading"      # Trading feature mentions
+    - "season 2"            # Season 2 rewards program
+    - "points"              # Points and rewards
+    - "trade"               # Trading discussions
+    - "trading"             # Trading discussions
+    - "mobile"              # Mobile app
+    - "app"                 # App discussions
+
+  # Accounts to exclude from search results
+  # These accounts' tweets will be filtered out
+  exclude_accounts:
+    - "nansen_ai"           # Exclude official Nansen account tweets
+
+  # Search filters to refine results
+  filters:
+    exclude_retweets: true      # Don't include retweets (recommended)
+    exclude_replies: false      # Include replies to capture discussions
+    min_engagement: 0           # Minimum total engagement (likes+RTs+replies+quotes)
+    exclude_spam: true          # Apply spam detection heuristics
+    language: "en"              # Language filter (null for all languages)
+
+  # API request settings
+  # Adjust based on your API tier and rate limits
+  max_results_per_page: 100      # Max allowed by Twitter API (10-100)
+  max_total_tweets: 500          # Safety limit to prevent excessive API costs
+                                 # Set to null for unlimited (be careful!)
+
+# ============================================================================
+# Claude API Configuration
+# ============================================================================
+claude:
+  # Model selection
+  # claude-sonnet-4-5-20250929 is recommended for accuracy and cost balance
+  model: "claude-sonnet-4-5-20250929"
+
+  # Batch processing settings
+  batch_size: 15              # Number of tweets to analyze per API call
+                              # Higher = more efficient but larger context
+                              # Recommended: 10-20 tweets
+
+  # Model parameters
+  temperature: 0.15           # Low temperature for consistent brand monitoring
+                              # Range: 0.0 (deterministic) to 1.0 (creative)
+
+  max_tokens: 8192            # Maximum output tokens per request
+                              # Increased for comprehensive multi-product analysis
+
+  # Cost management
+  # Protect against unexpected high costs
+  cost_limits:
+    max_per_run_usd: 5.0      # Stop analysis if total cost exceeds this
+    warn_threshold_usd: 2.0   # Log warning when cost approaches limit
+
+  # Retry configuration for API failures
+  max_retries: 5              # Number of retry attempts
+  retry_backoff: [1, 2, 4, 8, 16]  # Exponential backoff in seconds
+
+# ============================================================================
+# Sentiment Analysis Configuration
+# ============================================================================
+sentiment:
+  # Detection thresholds for flagging important tweets
+  thresholds:
+    high_engagement: 100        # Total engagement count to flag as "viral"
+    high_reach_followers: 10000  # Follower count threshold for "high reach"
+    influencer_followers: 50000  # Follower count threshold for "influencer"
+    critical_fud_count: 5       # Number of critical FUD to trigger team alert
+
+  # Keywords that trigger HIGH urgency classification
+  # These indicate serious issues requiring immediate attention
+  urgent_keywords:
+    - "scam"
+    - "fraud"
+    - "rugpull"
+    - "rug pull"
+    - "ponzi"
+    - "lost funds"
+    - "stolen"
+    - "hack"
+    - "hacked"
+    - "platform down"
+    - "can't withdraw"
+    - "cannot access"
+    - "funds missing"
+
+  # Spam detection heuristics
+  # Tweets matching these criteria may be filtered out
+  spam_detection:
+    max_hashtags: 10          # Too many hashtags = likely spam
+    max_mentions: 5           # Too many mentions = likely spam
+    max_urls: 3               # Too many URLs = likely spam
+    min_text_length: 10       # Very short tweets may be spam
+
+  # Cache configuration
+  # Caching reduces API costs by avoiding re-analysis
+  cache:
+    enabled: true             # Enable sentiment cache
+    max_age_days: 7           # Re-analyze tweets older than this
+    cleanup_days: 30          # Remove cache entries older than this
+
+# ============================================================================
+# Slack Notification Configuration
+# ============================================================================
+slack:
+  # Channel information (for documentation)
+  # Actual channel is configured via environment variables
+  channel_name: "#marketing-alerts"
+
+  # Team mention settings
+  # When to tag team members for urgent issues
+  mention_on_urgent: true     # Enable @mentions for critical alerts
+
+  mention_thresholds:
+    critical_fud: 5           # Mention team if this many critical FUD detected
+    affiliate_violations: 1   # Mention on ANY affiliate violation
+    scam_accusations: 1       # Mention on ANY scam accusation
+    viral_negative: true      # Mention if negative tweet goes viral
+
+  # Message formatting preferences
+  formatting:
+    max_tweet_length: 150            # Truncate tweet text in examples
+    show_top_positive_themes: 5      # Number of positive themes in TLDR
+    show_top_negative_themes: 5      # Number of negative themes in TLDR
+    show_example_tweets_per_theme: 3 # Example tweets per theme
+    use_threading: true              # Post detailed analysis as thread reply
+
+  # Retry configuration for Slack API failures
+  max_retries: 3
+  retry_backoff: [1, 2, 4]    # Backoff in seconds between retries
+
+# ============================================================================
+# Data Retention Configuration
+# ============================================================================
+retention:
+  # How long to keep different types of data
+  # Longer retention = more storage needed
+  logs_days: 30       # Keep log files for 30 days
+  cache_days: 7       # Keep sentiment cache for 7 days
+  reports_days: 90    # Keep JSON reports for 90 days (for trend analysis)
+
+# ============================================================================
+# Monitoring & Alerts Configuration
+# ============================================================================
+monitoring:
+  # Negative sentiment spike detection
+  alert_on_negative_spike: true
+  negative_spike_threshold: 0.5    # Alert if >50% of tweets are negative
+
+  # Viral negative content detection
+  alert_on_viral_negative: true
+  viral_engagement_threshold: 500  # Alert if negative tweet exceeds this
+
+  # Influencer monitoring
+  alert_on_influencer_negative: true  # Alert on negative from influencers
+
+  # Performance monitoring thresholds
+  max_execution_time_seconds: 600    # Alert if workflow takes >10 minutes
+  max_api_cost_per_run: 5.0          # Alert if cost exceeds this per run
+
+# ============================================================================
+# Advanced Settings (Optional)
+# ============================================================================
+advanced:
+  # Parallel processing (if supported)
+  enable_parallel_processing: false
+  max_workers: 4
+
+  # Debug settings
+  debug_mode: false           # Enable verbose debug logging
+  save_raw_responses: false   # Save raw API responses for debugging
+
+  # Report generation
+  generate_json_reports: true     # Save JSON reports to logs/
+  generate_csv_exports: false     # Export data to CSV (not implemented)
+
+  # Historical tracking
+  track_sentiment_trends: true    # Track sentiment over time
+  trend_window_days: 7            # Days to consider for trend calculation
+
+# ============================================================================
+# Notes:
+# ============================================================================
+# 1. API Keys: Store sensitive credentials in .env file, NOT in this config
+# 2. Cost Management: Monitor your Claude API usage to avoid unexpected charges
+# 3. Rate Limits: Respect Twitter API rate limits based on your access tier
+# 4. Testing: Use a low max_total_tweets value when testing (e.g., 10)
+# 5. Monitoring: Review alerts regularly to tune thresholds for your needs
+# ============================================================================
+# Alert Configuration
+alerts:
+  enable_notifications: true
+  critical_threshold: 5
+  alert_channels:
+    - slack
+  alert_on_errors: true
