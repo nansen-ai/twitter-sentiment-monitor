@@ -27,15 +27,20 @@ from datetime import datetime, timedelta
 from typing import Dict, List
 
 # Add src to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
 from twitter_client import TwitterClient
 from sentiment_analyzer import SentimentAnalyzer
 from aggregator import SentimentAggregator
 from slack_notifier import SlackNotifier
 from utils import (
-    load_env, load_config, setup_logging, save_json,
-    get_time_range_string, cleanup_old_files, ensure_directory
+    load_env,
+    load_config,
+    setup_logging,
+    save_json,
+    get_time_range_string,
+    cleanup_old_files,
+    ensure_directory,
 )
 
 
@@ -51,7 +56,7 @@ def parse_arguments() -> argparse.Namespace:
         Parsed arguments namespace
     """
     parser = argparse.ArgumentParser(
-        description='Nansen Twitter Sentiment Monitor',
+        description="Nansen Twitter Sentiment Monitor",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -61,45 +66,41 @@ Examples:
   %(prog)s --verbose                Enable debug logging
   %(prog)s --no-cache               Disable sentiment cache
   %(prog)s --config custom.yaml    Use custom config file
-        """
+        """,
     )
 
     parser.add_argument(
-        '--dry-run',
-        action='store_true',
-        help='Test mode - analyze tweets but do not send to Slack'
+        "--dry-run",
+        action="store_true",
+        help="Test mode - analyze tweets but do not send to Slack",
     )
 
     parser.add_argument(
-        '--hours',
+        "--hours",
         type=float,
         default=24,
-        help='Hours to look back for tweets (default: 24, supports decimals like 0.5 for 30 mins)'
+        help="Hours to look back for tweets (default: 24, supports decimals like 0.5 for 30 mins)",
     )
 
     parser.add_argument(
-        '--output',
+        "--output", type=str, help="Custom output file path for report JSON"
+    )
+
+    parser.add_argument(
+        "--verbose", action="store_true", help="Enable verbose debug logging"
+    )
+
+    parser.add_argument(
+        "--no-cache",
+        action="store_true",
+        help="Disable sentiment cache (re-analyze all tweets)",
+    )
+
+    parser.add_argument(
+        "--config",
         type=str,
-        help='Custom output file path for report JSON'
-    )
-
-    parser.add_argument(
-        '--verbose',
-        action='store_true',
-        help='Enable verbose debug logging'
-    )
-
-    parser.add_argument(
-        '--no-cache',
-        action='store_true',
-        help='Disable sentiment cache (re-analyze all tweets)'
-    )
-
-    parser.add_argument(
-        '--config',
-        type=str,
-        default='config/config.yaml',
-        help='Path to configuration file (default: config/config.yaml)'
+        default="config/config.yaml",
+        help="Path to configuration file (default: config/config.yaml)",
     )
 
     return parser.parse_args()
@@ -116,15 +117,15 @@ def main() -> int:
     args = parse_arguments()
 
     # Setup logging
-    log_level = 'DEBUG' if args.verbose else os.getenv('LOG_LEVEL', 'INFO')
-    log_file = os.getenv('LOG_FILE', 'logs/sentiment_monitor.log')
+    log_level = "DEBUG" if args.verbose else os.getenv("LOG_LEVEL", "INFO")
+    log_file = os.getenv("LOG_FILE", "logs/sentiment_monitor.log")
     setup_logging(log_level, log_file)
 
     # Start timer
     start_time = time.time()
 
     # Ensure logs directory exists
-    ensure_directory('logs')
+    ensure_directory("logs")
 
     logger.info("=" * 60)
     logger.info("Starting Nansen Twitter Sentiment Monitor")
@@ -224,7 +225,7 @@ def main() -> int:
 
         # Save raw tweets
         timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-        raw_file = f'logs/tweets_raw_{timestamp}.json'
+        raw_file = f"logs/tweets_raw_{timestamp}.json"
         try:
             save_json(tweets, raw_file)
             logger.info(f"💾 Saved raw tweets to {raw_file}")
@@ -241,8 +242,8 @@ def main() -> int:
         try:
             analyzed_tweets = sentiment_analyzer.analyze_tweets(
                 tweets,
-                batch_size=config.get('claude', {}).get('batch_size', 15),
-                use_cache=not args.no_cache
+                batch_size=config.get("claude", {}).get("batch_size", 15),
+                use_cache=not args.no_cache,
             )
             logger.info(f"✅ Analysis complete")
         except Exception as e:
@@ -252,20 +253,21 @@ def main() -> int:
 
         # Calculate total API cost
         total_cost = sum(
-            t.get('api_cost', {}).get('estimated_cost_usd', 0)
-            for t in analyzed_tweets
+            t.get("api_cost", {}).get("estimated_cost_usd", 0) for t in analyzed_tweets
         )
         logger.info(f"💰 Total Claude API cost: ${total_cost:.4f}")
 
         # Check cost limit
-        max_cost = config.get('claude', {}).get('cost_limits', {}).get('max_per_run_usd', 5.0)
+        max_cost = (
+            config.get("claude", {}).get("cost_limits", {}).get("max_per_run_usd", 5.0)
+        )
         if total_cost > max_cost:
             logger.warning(
                 f"⚠️ Cost ${total_cost:.4f} exceeds configured limit ${max_cost:.2f}"
             )
 
         # Save analyzed tweets
-        analyzed_file = f'logs/tweets_analyzed_{timestamp}.json'
+        analyzed_file = f"logs/tweets_analyzed_{timestamp}.json"
         try:
             save_json(analyzed_tweets, analyzed_file)
             logger.info(f"💾 Saved analyzed tweets to {analyzed_file}")
@@ -286,13 +288,13 @@ def main() -> int:
             return 1
 
         # Update metadata
-        report['metadata']['analysis_duration'] = round(time.time() - start_time, 2)
-        report['metadata']['total_api_cost'] = total_cost
-        report['metadata']['tweets_analyzed'] = len(tweets)
-        report['metadata']['date_range'] = get_time_range_string(args.hours)
+        report["metadata"]["analysis_duration"] = round(time.time() - start_time, 2)
+        report["metadata"]["total_api_cost"] = total_cost
+        report["metadata"]["tweets_analyzed"] = len(tweets)
+        report["metadata"]["date_range"] = get_time_range_string(args.hours)
 
         # Log summary statistics
-        summary = report['raw_data']['summary']
+        summary = report["raw_data"]["summary"]
         logger.info("")
         logger.info("📊 REPORT SUMMARY")
         logger.info("-" * 60)
@@ -304,7 +306,7 @@ def main() -> int:
         logger.info(f"Sentiment Score: {summary['sentiment_score']:.1f}/100")
 
         # Log strategic highlights
-        highlights = report['raw_data']['strategic_highlights']
+        highlights = report["raw_data"]["strategic_highlights"]
         logger.info("-" * 60)
         logger.info(
             f"🎯 Strategic Wins: {highlights['strategic_wins']} | "
@@ -312,16 +314,20 @@ def main() -> int:
             f"👤 Influencer Mentions: {highlights['influencer_mentions']}"
         )
 
-        if highlights['critical_fud'] > 0:
+        if highlights["critical_fud"] > 0:
             logger.warning(f"⚠️ Critical FUD: {highlights['critical_fud']}")
 
-        if highlights['affiliate_violations'] > 0:
-            logger.warning(f"🚨 Affiliate Violations: {highlights['affiliate_violations']}")
+        if highlights["affiliate_violations"] > 0:
+            logger.warning(
+                f"🚨 Affiliate Violations: {highlights['affiliate_violations']}"
+            )
 
         logger.info("-" * 60)
 
         # Save report
-        report_file = args.output or f'logs/report_{datetime.now().strftime("%Y-%m-%d")}.json'
+        report_file = (
+            args.output or f'logs/report_{datetime.now().strftime("%Y-%m-%d")}.json'
+        )
         try:
             save_json(report, report_file)
             logger.info(f"💾 Saved report to {report_file}")
@@ -338,7 +344,7 @@ def main() -> int:
             logger.info("=" * 60)
             logger.info("📊 REPORT PREVIEW (Message 1 - Summary):")
             logger.info("=" * 60)
-            print("\n" + report['message_1'] + "\n")
+            print("\n" + report["message_1"] + "\n")
             logger.info("=" * 60)
             logger.info("ℹ️ Message 2 (Detailed Analysis) available in: " + report_file)
             logger.info("=" * 60)
@@ -368,15 +374,15 @@ def main() -> int:
 
         try:
             # Clean old log files
-            logs_retention = config.get('retention', {}).get('logs_days', 30)
-            cleanup_old_files('logs', logs_retention, pattern='*.log')
+            logs_retention = config.get("retention", {}).get("logs_days", 30)
+            cleanup_old_files("logs", logs_retention, pattern="*.log")
 
             # Clean old tweet files
-            cleanup_old_files('logs', logs_retention, pattern='tweets_*.json')
+            cleanup_old_files("logs", logs_retention, pattern="tweets_*.json")
 
             # Keep reports longer
-            report_retention = config.get('retention', {}).get('reports_days', 90)
-            cleanup_old_files('logs', report_retention, pattern='report_*.json')
+            report_retention = config.get("retention", {}).get("reports_days", 90)
+            cleanup_old_files("logs", report_retention, pattern="report_*.json")
 
             logger.info("✅ Cleanup complete")
         except Exception as e:
@@ -397,11 +403,13 @@ def main() -> int:
         logger.info(f"📝 Sentiment Score: {summary['sentiment_score']:.1f}/100")
         logger.info(f"🎯 Strategic Wins: {highlights['strategic_wins']}")
 
-        if highlights['critical_fud'] > 0:
+        if highlights["critical_fud"] > 0:
             logger.warning(f"⚠️ Critical FUD: {highlights['critical_fud']}")
 
-        if highlights['affiliate_violations'] > 0:
-            logger.warning(f"🚨 Affiliate Violations: {highlights['affiliate_violations']}")
+        if highlights["affiliate_violations"] > 0:
+            logger.warning(
+                f"🚨 Affiliate Violations: {highlights['affiliate_violations']}"
+            )
 
         logger.info("=" * 60)
 
@@ -433,5 +441,5 @@ def main() -> int:
         return 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

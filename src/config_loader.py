@@ -39,7 +39,9 @@ class ConfigLoader:
 
         missing_vars = [var for var in required_env_vars if not os.getenv(var)]
         if missing_vars:
-            raise ValueError(f"Missing required environment variables: {', '.join(missing_vars)}")
+            raise ValueError(
+                f"Missing required environment variables: {', '.join(missing_vars)}"
+            )
 
     def get_twitter_config(self) -> Dict[str, Any]:
         """Get Twitter monitoring configuration."""

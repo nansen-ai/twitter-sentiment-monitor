@@ -20,12 +20,12 @@ MAX_RETRIES = 3
 RETRY_BACKOFF = [1, 2, 4]
 
 EMOJI_MAP = {
-    'positive': '💚',
-    'negative': '❌',
-    'neutral': '⚪',
-    'improving': '↗️',
-    'stable': '→',
-    'declining': '↘️'
+    "positive": "💚",
+    "negative": "❌",
+    "neutral": "⚪",
+    "improving": "↗️",
+    "stable": "→",
+    "declining": "↘️",
 }
 
 
@@ -106,7 +106,9 @@ class SlackNotifier:
             message_1 = self._format_message_1(report)
             message_2 = self._format_message_2(report)
 
-            logger.info(f"Sending report to Slack (Message 1: {len(message_1)} chars, Message 2: {len(message_2)} chars)")
+            logger.info(
+                f"Sending report to Slack (Message 1: {len(message_1)} chars, Message 2: {len(message_2)} chars)"
+            )
 
             # Check for urgent alerts
             should_alert, alert_reason = self._should_alert_team(report)
@@ -206,24 +208,24 @@ Please check logs for more details."""
         Returns:
             Formatted Slack message
         """
-        summary = report['raw_data']['summary']
-        metadata = report['metadata']
-        strategic = report['raw_data']['strategic_highlights']
+        summary = report["raw_data"]["summary"]
+        metadata = report["metadata"]
+        strategic = report["raw_data"]["strategic_highlights"]
 
-        total = summary['total_tweets']
-        pos_count = summary['positive_count']
-        neg_count = summary['negative_count']
-        pos_pct = summary['positive_pct']
-        neg_pct = summary['negative_pct']
-        score = summary['sentiment_score']
+        total = summary["total_tweets"]
+        pos_count = summary["positive_count"]
+        neg_count = summary["negative_count"]
+        pos_pct = summary["positive_pct"]
+        neg_pct = summary["negative_pct"]
+        score = summary["sentiment_score"]
 
         # Determine trend emoji
         if score >= 60:
-            trend_emoji = EMOJI_MAP['improving']
+            trend_emoji = EMOJI_MAP["improving"]
         elif score >= 40:
-            trend_emoji = EMOJI_MAP['stable']
+            trend_emoji = EMOJI_MAP["stable"]
         else:
-            trend_emoji = EMOJI_MAP['declining']
+            trend_emoji = EMOJI_MAP["declining"]
 
         message = f"""📊 Nansen Daily Sentiment Report
 ━━━━━━━━━━
@@ -235,12 +237,14 @@ Total Tweets: {total}
 Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
 
         # Add conditional urgent alert
-        critical_fud = strategic.get('critical_fud', 0)
-        affiliate_violations = strategic.get('affiliate_violations', 0)
+        critical_fud = strategic.get("critical_fud", 0)
+        affiliate_violations = strategic.get("affiliate_violations", 0)
 
         if critical_fud > 5 or affiliate_violations > 0:
             alert_count = critical_fud + affiliate_violations
-            message += f"\n\n⚠️ {alert_count} critical issues detected - see thread for details"
+            message += (
+                f"\n\n⚠️ {alert_count} critical issues detected - see thread for details"
+            )
 
         return message
 
@@ -254,55 +258,75 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
         Returns:
             Formatted Slack message with all sections
         """
-        raw_data = report['raw_data']
-        metadata = report['metadata']
+        raw_data = report["raw_data"]
+        metadata = report["metadata"]
 
         sections = []
 
         # Section 1: Product Mentions
         sections.append("📱 KEY PRODUCT MENTIONS")
         sections.append("━━━━━━━━━━━━━━━━━━━━")
-        product_mentions = raw_data['product_mentions']
-        sections.append(f"• Nansen Mobile: {product_mentions.get('nansen_mobile', 0)} tweets")
-        sections.append(f"• Season 2 / Rewards: {product_mentions.get('season2_rewards', 0)} tweets")
-        sections.append(f"• Nansen Trading: {product_mentions.get('nansen_trading', 0)} tweets")
-        sections.append(f"• AI Insights: {product_mentions.get('ai_insights', 0)} tweets")
-        sections.append(f"• Nansen Points: {product_mentions.get('nansen_points', 0)} tweets")
+        product_mentions = raw_data["product_mentions"]
+        sections.append(
+            f"• Nansen Mobile: {product_mentions.get('nansen_mobile', 0)} tweets"
+        )
+        sections.append(
+            f"• Season 2 / Rewards: {product_mentions.get('season2_rewards', 0)} tweets"
+        )
+        sections.append(
+            f"• Nansen Trading: {product_mentions.get('nansen_trading', 0)} tweets"
+        )
+        sections.append(
+            f"• AI Insights: {product_mentions.get('ai_insights', 0)} tweets"
+        )
+        sections.append(
+            f"• Nansen Points: {product_mentions.get('nansen_points', 0)} tweets"
+        )
         sections.append("")
 
         # Section 2: Positive Sentiments
         sections.append("━━━━━━━━━━━━━━━━━━━━")
         sections.append("✅ TLDR POSITIVE SENTIMENTS")
-        positive_themes = self._format_positive_themes(raw_data.get('positive_themes', []))
+        positive_themes = self._format_positive_themes(
+            raw_data.get("positive_themes", [])
+        )
         sections.append(positive_themes)
         sections.append("")
 
         # Section 3: Negative Sentiments
         sections.append("━━━━━━━━━━━━━━━━━━━━")
         sections.append("⚠️ TLDR NEGATIVE SENTIMENTS")
-        negative_themes = self._format_negative_themes(raw_data.get('negative_themes', []))
+        negative_themes = self._format_negative_themes(
+            raw_data.get("negative_themes", [])
+        )
         sections.append(negative_themes)
         sections.append("")
 
         # Section 4: Strategic Highlights
-        strategic = raw_data['strategic_highlights']
+        strategic = raw_data["strategic_highlights"]
         if any(strategic.values()):
             sections.append("━━━━━━━━━━━━━━━━━━━━")
             sections.append("🎯 STRATEGIC HIGHLIGHTS")
             sections.append(f"• {strategic.get('strategic_wins', 0)} Strategic Wins 🎉")
-            sections.append(f"• {strategic.get('adoption_signals', 0)} Adoption Signals 📈")
-            sections.append(f"• {strategic.get('influencer_mentions', 0)} Influencer Mentions 👤")
+            sections.append(
+                f"• {strategic.get('adoption_signals', 0)} Adoption Signals 📈"
+            )
+            sections.append(
+                f"• {strategic.get('influencer_mentions', 0)} Influencer Mentions 👤"
+            )
 
-            if strategic.get('critical_fud', 0) > 0:
+            if strategic.get("critical_fud", 0) > 0:
                 sections.append(f"• ⚠️ {strategic['critical_fud']} Critical FUD alerts")
-            if strategic.get('affiliate_violations', 0) > 0:
-                sections.append(f"• 🚨 {strategic['affiliate_violations']} Affiliate Violations")
+            if strategic.get("affiliate_violations", 0) > 0:
+                sections.append(
+                    f"• 🚨 {strategic['affiliate_violations']} Affiliate Violations"
+                )
 
             sections.append("")
 
         # Section 5: Full Positive Tweet List
         sections.append("━━━━━━━━━━━━━━━━━━━━")
-        positive_tweets = raw_data.get('all_positive_tweets', [])
+        positive_tweets = raw_data.get("all_positive_tweets", [])
         sections.append(f"✅ Positive tweets (Total: {len(positive_tweets)})")
         if positive_tweets:
             sections.append(self._format_tweet_list(positive_tweets))
@@ -312,7 +336,7 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
 
         # Section 6: Full Negative Tweet List
         sections.append("━━━━━━━━━━━━━━━━━━━━")
-        negative_tweets = raw_data.get('all_negative_tweets', [])
+        negative_tweets = raw_data.get("all_negative_tweets", [])
         sections.append(f"⚠️ Negative tweets (Total: {len(negative_tweets)})")
         if negative_tweets:
             sections.append(self._format_tweet_list(negative_tweets))
@@ -324,23 +348,29 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
         sections.append("━━━━━━━━━━━━━━━━━━━━")
         sections.append("🚨 NEGATIVE PHRASE ANALYSIS")
         phrase_analysis = self._format_negative_phrase_analysis(
-            raw_data.get('negative_phrase_analysis', [])
+            raw_data.get("negative_phrase_analysis", [])
         )
         sections.append(phrase_analysis)
         sections.append("")
 
         # Footer
         sections.append("━━━━━━━━━━━━━━━━━━━━")
-        timestamp = datetime.fromisoformat(metadata['generated_at']).strftime('%Y-%m-%d %H:%M UTC')
-        cost = metadata.get('total_api_cost', 0.0)
+        timestamp = datetime.fromisoformat(metadata["generated_at"]).strftime(
+            "%Y-%m-%d %H:%M UTC"
+        )
+        cost = metadata.get("total_api_cost", 0.0)
         sections.append(f"📊 Generated at {timestamp} | Cost: ${cost:.4f}")
 
         message = "\n".join(sections)
 
         # Truncate if too long
         if len(message) > MAX_MESSAGE_LENGTH:
-            logger.warning(f"Message 2 exceeds max length ({len(message)} chars), truncating...")
-            message = message[:MAX_MESSAGE_LENGTH - 100] + "\n\n... (truncated for length)"
+            logger.warning(
+                f"Message 2 exceeds max length ({len(message)} chars), truncating..."
+            )
+            message = (
+                message[: MAX_MESSAGE_LENGTH - 100] + "\n\n... (truncated for length)"
+            )
 
         return message
 
@@ -359,14 +389,14 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
 
         lines = []
         for theme_data in themes:
-            description = theme_data['description']
-            examples = theme_data.get('example_tweets', [])
+            description = theme_data["description"]
+            examples = theme_data.get("example_tweets", [])
 
             # Format examples
             example_links = []
             for ex in examples[:3]:  # Limit to 3 examples
-                url = ex['url']
-                username = ex['username']
+                url = ex["url"]
+                username = ex["username"]
                 example_links.append(f"<{url}|@{username}>")
 
             examples_str = " ".join(example_links) if example_links else "No examples"
@@ -390,18 +420,20 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
 
         lines = []
         for theme_data in themes:
-            description = theme_data['description']
-            urgency = theme_data.get('urgency', 'LOW')
-            examples = theme_data.get('example_tweets', [])
+            description = theme_data["description"]
+            urgency = theme_data.get("urgency", "LOW")
+            examples = theme_data.get("example_tweets", [])
 
             # Add urgency indicator
-            urgency_emoji = "🚨" if urgency == "HIGH" else "⚠️" if urgency == "MEDIUM" else "ℹ️"
+            urgency_emoji = (
+                "🚨" if urgency == "HIGH" else "⚠️" if urgency == "MEDIUM" else "ℹ️"
+            )
 
             # Format examples
             example_links = []
             for ex in examples[:3]:
-                url = ex['url']
-                username = ex['username']
+                url = ex["url"]
+                username = ex["username"]
                 example_links.append(f"<{url}|@{username}>")
 
             examples_str = " ".join(example_links) if example_links else "No examples"
@@ -422,8 +454,8 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
         """
         lines = []
         for tweet in tweets:
-            url = tweet['url']
-            username = tweet['username']
+            url = tweet["url"]
+            username = tweet["username"]
             lines.append(f"• <{url}|@{username}>")
 
         return "\n".join(lines)
@@ -443,12 +475,12 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
 
         lines = []
         for item in phrases:
-            phrase = item['phrase']
-            username = item['username']
-            category = item['category']
-            url = item['url']
+            phrase = item["phrase"]
+            username = item["username"]
+            category = item["category"]
+            url = item["url"]
 
-            lines.append(f"• Phrase: \"{phrase}\"")
+            lines.append(f'• Phrase: "{phrase}"')
             lines.append(f"  Handle: @{username}")
             lines.append(f"  Theme: {category}")
             lines.append(f"  URL: <{url}|@{username}>")
@@ -470,7 +502,9 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
         try:
             if self.method == "webhook":
                 # Webhooks don't support threading, post separately
-                logger.info("Webhook doesn't support threading, posting messages separately")
+                logger.info(
+                    "Webhook doesn't support threading, posting messages separately"
+                )
                 result_1 = self._post_with_webhook(message_1)
                 time.sleep(1)  # Small delay between messages
                 result_2 = self._post_with_webhook(message_2)
@@ -486,7 +520,7 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
                     return False
 
                 # Get thread timestamp
-                thread_ts = result_1.get('ts')
+                thread_ts = result_1.get("ts")
                 logger.info(f"Main message posted with ts: {thread_ts}")
 
                 # Small delay before threaded reply
@@ -511,9 +545,17 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
             # Fallback: Try posting separately
             logger.info("Attempting fallback: posting messages separately")
             try:
-                self._post_with_webhook(message_1) if self.method == "webhook" else self._post_with_bot(message_1)
+                (
+                    self._post_with_webhook(message_1)
+                    if self.method == "webhook"
+                    else self._post_with_bot(message_1)
+                )
                 time.sleep(1)
-                self._post_with_webhook(message_2) if self.method == "webhook" else self._post_with_bot(message_2)
+                (
+                    self._post_with_webhook(message_2)
+                    if self.method == "webhook"
+                    else self._post_with_bot(message_2)
+                )
                 return True
             except Exception as fallback_error:
                 logger.error(f"Fallback also failed: {fallback_error}")
@@ -537,29 +579,31 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
 
         for attempt in range(MAX_RETRIES):
             try:
-                response = requests.post(
-                    self.webhook_url,
-                    json=payload,
-                    timeout=10
-                )
+                response = requests.post(self.webhook_url, json=payload, timeout=10)
 
                 if response.status_code == 200:
                     logger.debug(f"Webhook post successful (attempt {attempt + 1})")
                     return True
                 elif response.status_code == 429:
                     # Rate limited
-                    retry_after = int(response.headers.get('Retry-After', RETRY_BACKOFF[attempt]))
+                    retry_after = int(
+                        response.headers.get("Retry-After", RETRY_BACKOFF[attempt])
+                    )
                     logger.warning(f"Rate limited. Retrying after {retry_after}s...")
                     time.sleep(retry_after)
                 else:
-                    logger.error(f"Webhook post failed: {response.status_code} - {response.text}")
+                    logger.error(
+                        f"Webhook post failed: {response.status_code} - {response.text}"
+                    )
                     if attempt < MAX_RETRIES - 1:
                         time.sleep(RETRY_BACKOFF[attempt])
                     else:
                         return False
 
             except requests.RequestException as e:
-                logger.error(f"Network error posting to webhook (attempt {attempt + 1}): {e}")
+                logger.error(
+                    f"Network error posting to webhook (attempt {attempt + 1}): {e}"
+                )
                 if attempt < MAX_RETRIES - 1:
                     time.sleep(RETRY_BACKOFF[attempt])
                 else:
@@ -567,7 +611,9 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
 
         return False
 
-    def _post_with_bot(self, message: str, thread_ts: Optional[str] = None) -> Optional[Dict]:
+    def _post_with_bot(
+        self, message: str, thread_ts: Optional[str] = None
+    ) -> Optional[Dict]:
         """
         Post message using bot token with retry logic.
 
@@ -589,10 +635,10 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
                     text=message,
                     thread_ts=thread_ts,
                     unfurl_links=False,
-                    unfurl_media=False
+                    unfurl_media=False,
                 )
 
-                if response['ok']:
+                if response["ok"]:
                     logger.debug(f"Bot post successful (attempt {attempt + 1})")
                     return response
                 else:
@@ -603,21 +649,27 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
                         return None
 
             except SlackApiError as e:
-                error_code = e.response['error']
+                error_code = e.response["error"]
 
-                if error_code == 'ratelimited':
-                    retry_after = int(e.response.headers.get('Retry-After', RETRY_BACKOFF[attempt]))
+                if error_code == "ratelimited":
+                    retry_after = int(
+                        e.response.headers.get("Retry-After", RETRY_BACKOFF[attempt])
+                    )
                     logger.warning(f"Rate limited. Retrying after {retry_after}s...")
                     time.sleep(retry_after)
                 else:
-                    logger.error(f"Slack API error (attempt {attempt + 1}): {error_code}")
+                    logger.error(
+                        f"Slack API error (attempt {attempt + 1}): {error_code}"
+                    )
                     if attempt < MAX_RETRIES - 1:
                         time.sleep(RETRY_BACKOFF[attempt])
                     else:
                         return None
 
             except Exception as e:
-                logger.error(f"Unexpected error posting with bot (attempt {attempt + 1}): {e}")
+                logger.error(
+                    f"Unexpected error posting with bot (attempt {attempt + 1}): {e}"
+                )
                 if attempt < MAX_RETRIES - 1:
                     time.sleep(RETRY_BACKOFF[attempt])
                 else:
@@ -635,30 +687,30 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
         Returns:
             Tuple of (should_alert, reason)
         """
-        strategic = report['raw_data']['strategic_highlights']
-        negative_tweets = report['raw_data'].get('all_negative_tweets', [])
+        strategic = report["raw_data"]["strategic_highlights"]
+        negative_tweets = report["raw_data"].get("all_negative_tweets", [])
 
         # Check critical FUD count
-        critical_fud = strategic.get('critical_fud', 0)
+        critical_fud = strategic.get("critical_fud", 0)
         if critical_fud > 5:
             return (True, f"{critical_fud} Critical FUD alerts detected")
 
         # Check affiliate violations
-        affiliate_violations = strategic.get('affiliate_violations', 0)
+        affiliate_violations = strategic.get("affiliate_violations", 0)
         if affiliate_violations > 0:
             return (True, f"{affiliate_violations} Affiliate violations found")
 
         # Check for scam accusations from influencers
         for tweet in negative_tweets:
-            themes = tweet.get('themes', [])
-            if 'scam_accusations' in themes:
+            themes = tweet.get("themes", [])
+            if "scam_accusations" in themes:
                 # Check original tweet data for influencer status
                 # This would need to be passed through in the raw_data structure
                 return (True, "Scam accusations detected")
 
         # Check for viral negative tweets (high engagement)
         for tweet in negative_tweets:
-            if tweet.get('engagement', 0) > 100:
+            if tweet.get("engagement", 0) > 100:
                 return (True, "Viral negative tweet detected")
 
         return (False, "")
@@ -687,7 +739,7 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
         Returns:
             True if valid
         """
-        required_keys = ['message_1', 'message_2', 'raw_data', 'metadata']
+        required_keys = ["message_1", "message_2", "raw_data", "metadata"]
 
         for key in required_keys:
             if key not in report:
@@ -695,12 +747,12 @@ Overall Sentiment: {score:.0f}/100 {trend_emoji}"""
                 return False
 
         # Check messages are non-empty
-        if not report['message_1'] or not report['message_2']:
+        if not report["message_1"] or not report["message_2"]:
             logger.error("Empty messages in report")
             return False
 
         # Check raw_data structure
-        if 'summary' not in report['raw_data']:
+        if "summary" not in report["raw_data"]:
             logger.error("Missing summary in raw_data")
             return False
 

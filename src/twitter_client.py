@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()
 logging.basicConfig(
     level=getattr(logging, log_level, logging.INFO),
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
@@ -42,8 +42,7 @@ class TwitterClient:
 
         # Initialize tweepy client with rate limit handling
         self.client = tweepy.Client(
-            bearer_token=self.bearer_token,
-            wait_on_rate_limit=True
+            bearer_token=self.bearer_token, wait_on_rate_limit=True
         )
 
         logger.info("Twitter client initialized")
@@ -122,31 +121,55 @@ class TwitterClient:
 
                 while retry_count < max_retries and not success:
                     try:
-                        logger.info(f"Fetching page {page}..." + (f" (token: {next_token[:20]}...)" if next_token else ""))
+                        logger.info(
+                            f"Fetching page {page}..."
+                            + (f" (token: {next_token[:20]}...)" if next_token else "")
+                        )
 
                         # Use Recent Search (Pro plan - last 7 days)
                         response = self.client.search_recent_tweets(
                             query=query,
                             start_time=start_time,
                             max_results=100,
-                            tweet_fields=['id', 'text', 'author_id', 'created_at', 'public_metrics', 'entities', 'conversation_id'],
-                            expansions=['author_id'],
-                            user_fields=['username', 'name', 'verified', 'public_metrics'],
-                            next_token=next_token
+                            tweet_fields=[
+                                "id",
+                                "text",
+                                "author_id",
+                                "created_at",
+                                "public_metrics",
+                                "entities",
+                                "conversation_id",
+                            ],
+                            expansions=["author_id"],
+                            user_fields=[
+                                "username",
+                                "name",
+                                "verified",
+                                "public_metrics",
+                            ],
+                            next_token=next_token,
                         )
-                        logger.debug("Using search_recent_tweets (Pro plan - last 7 days)")
+                        logger.debug(
+                            "Using search_recent_tweets (Pro plan - last 7 days)"
+                        )
 
                         success = True
 
                     except tweepy.TooManyRequests as e:
-                        logger.warning(f"⏳ 429 Rate limit exceeded, waiting before retry {retry_count + 1}/{max_retries}...")
+                        logger.warning(
+                            f"⏳ 429 Rate limit exceeded, waiting before retry {retry_count + 1}/{max_retries}..."
+                        )
                         retry_count += 1
                         if retry_count < max_retries:
-                            wait_time = min(2 ** retry_count * 60, 900)  # Exponential backoff, max 15 min
+                            wait_time = min(
+                                2**retry_count * 60, 900
+                            )  # Exponential backoff, max 15 min
                             logger.info(f"Waiting {wait_time} seconds before retry...")
                             time.sleep(wait_time)
                         else:
-                            logger.error("Max retries reached for rate limit. Returning collected tweets.")
+                            logger.error(
+                                "Max retries reached for rate limit. Returning collected tweets."
+                            )
                             return all_tweets
 
                     except tweepy.Unauthorized as e:
@@ -154,14 +177,18 @@ class TwitterClient:
                         return all_tweets
 
                     except tweepy.Forbidden as e:
-                        logger.error(f"✗ 403 Forbidden: Token lacks required permissions - {e}")
+                        logger.error(
+                            f"✗ 403 Forbidden: Token lacks required permissions - {e}"
+                        )
                         return all_tweets
 
                     except (tweepy.TweepyException, Exception) as e:
-                        logger.warning(f"Transient error: {e}. Retry {retry_count + 1}/{max_retries}")
+                        logger.warning(
+                            f"Transient error: {e}. Retry {retry_count + 1}/{max_retries}"
+                        )
                         retry_count += 1
                         if retry_count < max_retries:
-                            wait_time = 2 ** retry_count  # Exponential backoff
+                            wait_time = 2**retry_count  # Exponential backoff
                             time.sleep(wait_time)
                         else:
                             logger.error(f"Max retries reached. Error: {e}")
@@ -174,8 +201,8 @@ class TwitterClient:
 
                 # Build user lookup dictionary
                 users = {}
-                if response.includes and 'users' in response.includes:
-                    users = {user.id: user for user in response.includes['users']}
+                if response.includes and "users" in response.includes:
+                    users = {user.id: user for user in response.includes["users"]}
 
                 # Process tweets
                 page_tweets = []
@@ -187,48 +214,64 @@ class TwitterClient:
                         continue
 
                     # Extract engagement metrics
-                    metrics = tweet.public_metrics if hasattr(tweet, 'public_metrics') else {}
-                    likes = metrics.get('like_count', 0)
-                    retweets = metrics.get('retweet_count', 0)
-                    replies = metrics.get('reply_count', 0)
-                    quotes = metrics.get('quote_count', 0)
+                    metrics = (
+                        tweet.public_metrics if hasattr(tweet, "public_metrics") else {}
+                    )
+                    likes = metrics.get("like_count", 0)
+                    retweets = metrics.get("retweet_count", 0)
+                    replies = metrics.get("reply_count", 0)
+                    quotes = metrics.get("quote_count", 0)
 
                     # Get author metrics
-                    author_metrics = author.public_metrics if hasattr(author, 'public_metrics') else {}
-                    author_followers = author_metrics.get('followers_count', 0)
+                    author_metrics = (
+                        author.public_metrics
+                        if hasattr(author, "public_metrics")
+                        else {}
+                    )
+                    author_followers = author_metrics.get("followers_count", 0)
 
                     # Check for verification (API v2 format)
-                    is_verified = getattr(author, 'verified', False)
+                    is_verified = getattr(author, "verified", False)
 
                     # Extract matched keywords
                     mentioned_keywords = self._extract_keywords(tweet.text)
 
                     tweet_data = {
-                        'tweet_id': str(tweet.id),
-                        'text': tweet.text,
-                        'author_username': author.username,
-                        'author_name': author.name,
-                        'created_at': tweet.created_at.isoformat() if hasattr(tweet, 'created_at') and tweet.created_at else None,
-                        'engagement': {
-                            'likes': likes,
-                            'retweets': retweets,
-                            'replies': replies,
-                            'quotes': quotes,
-                            'total': likes + retweets + replies + quotes
+                        "tweet_id": str(tweet.id),
+                        "text": tweet.text,
+                        "author_username": author.username,
+                        "author_name": author.name,
+                        "created_at": (
+                            tweet.created_at.isoformat()
+                            if hasattr(tweet, "created_at") and tweet.created_at
+                            else None
+                        ),
+                        "engagement": {
+                            "likes": likes,
+                            "retweets": retweets,
+                            "replies": replies,
+                            "quotes": quotes,
+                            "total": likes + retweets + replies + quotes,
                         },
-                        'url': f"https://twitter.com/{author.username}/status/{tweet.id}",
-                        'is_verified': is_verified,
-                        'author_followers': author_followers,
-                        'mentioned_keywords': mentioned_keywords
+                        "url": f"https://twitter.com/{author.username}/status/{tweet.id}",
+                        "is_verified": is_verified,
+                        "author_followers": author_followers,
+                        "mentioned_keywords": mentioned_keywords,
                     }
 
                     page_tweets.append(tweet_data)
 
                 all_tweets.extend(page_tweets)
-                logger.info(f"✓ Page {page}: Retrieved {len(page_tweets)} tweets (Total: {len(all_tweets)})")
+                logger.info(
+                    f"✓ Page {page}: Retrieved {len(page_tweets)} tweets (Total: {len(all_tweets)})"
+                )
 
                 # Check for pagination
-                next_token = response.meta.get('next_token') if hasattr(response, 'meta') else None
+                next_token = (
+                    response.meta.get("next_token")
+                    if hasattr(response, "meta")
+                    else None
+                )
 
                 if not next_token:
                     logger.info("No more pages available")
@@ -259,8 +302,8 @@ class TwitterClient:
         matched = []
 
         # Check for @nansen_ai mention
-        if '@nansen_ai' in tweet_lower or 'nansen' in tweet_lower:
-            matched.append('nansen_ai')
+        if "@nansen_ai" in tweet_lower or "nansen" in tweet_lower:
+            matched.append("nansen_ai")
 
         # Check for other keywords
         for keyword in self.SEARCH_KEYWORDS:

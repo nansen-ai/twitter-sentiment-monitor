@@ -26,8 +26,7 @@ def alert_config():
 def alert_manager(alert_config):
     """Create an alert manager instance for testing."""
     return AlertManager(
-        slack_webhook_url="https://hooks.slack.com/test",
-        alert_config=alert_config
+        slack_webhook_url="https://hooks.slack.com/test", alert_config=alert_config
     )
 
 
@@ -41,7 +40,7 @@ def sample_sentiment_results():
             "author": "user1",
             "sentiment": "positive",
             "score": 0.8,
-            "confidence": 0.9
+            "confidence": 0.9,
         },
         {
             "tweet_id": "124",
@@ -49,7 +48,7 @@ def sample_sentiment_results():
             "author": "user2",
             "sentiment": "positive",
             "score": 0.6,
-            "confidence": 0.8
+            "confidence": 0.8,
         },
         {
             "tweet_id": "125",
@@ -57,8 +56,8 @@ def sample_sentiment_results():
             "author": "user3",
             "sentiment": "negative",
             "score": -0.8,
-            "confidence": 0.85
-        }
+            "confidence": 0.85,
+        },
     ]
 
 
@@ -70,7 +69,7 @@ def sample_aggregate():
         "positive_count": 5,
         "negative_count": 2,
         "neutral_count": 1,
-        "total_count": 8
+        "total_count": 8,
     }
 
 
@@ -95,7 +94,7 @@ class TestAlertManager:
             "positive_count": 10,
             "negative_count": 2,
             "neutral_count": 3,
-            "total_count": 15
+            "total_count": 15,
         }
 
         alert = alert_manager._create_aggregate_alert(aggregate)
@@ -112,7 +111,7 @@ class TestAlertManager:
             "positive_count": 2,
             "negative_count": 10,
             "neutral_count": 3,
-            "total_count": 15
+            "total_count": 15,
         }
 
         alert = alert_manager._create_aggregate_alert(aggregate)
@@ -129,7 +128,7 @@ class TestAlertManager:
             "author": "cryptotrader",
             "sentiment": "positive",
             "score": 0.9,
-            "confidence": 0.95
+            "confidence": 0.95,
         }
 
         alert = alert_manager._create_tweet_alert(result, "positive")
@@ -147,7 +146,7 @@ class TestAlertManager:
             "author": "bearishtrader",
             "sentiment": "negative",
             "score": -0.85,
-            "confidence": 0.9
+            "confidence": 0.9,
         }
 
         alert = alert_manager._create_tweet_alert(result, "negative")
@@ -161,10 +160,7 @@ class TestAlertManager:
         alert = {
             "type": "test_alert",
             "message": "Test alert message",
-            "data": {
-                "Score": "0.8",
-                "Confidence": "0.9"
-            }
+            "data": {"Score": "0.8", "Confidence": "0.9"},
         }
 
         blocks = alert_manager._format_slack_message(alert)
@@ -174,14 +170,16 @@ class TestAlertManager:
         assert blocks[1]["type"] == "section"
         assert "Test alert message" in blocks[1]["text"]["text"]
 
-    def test_check_and_send_alerts_high_average(self, alert_manager, sample_sentiment_results):
+    def test_check_and_send_alerts_high_average(
+        self, alert_manager, sample_sentiment_results
+    ):
         """Test alert triggering on high average score."""
         aggregate = {
             "average_score": 0.6,  # Above threshold of 0.5
             "positive_count": 2,
             "negative_count": 1,
             "neutral_count": 0,
-            "total_count": 3
+            "total_count": 3,
         }
 
         with patch.object(alert_manager, "send_alert") as mock_send:
@@ -198,7 +196,7 @@ class TestAlertManager:
                 "author": "bear",
                 "sentiment": "negative",
                 "score": -0.9,
-                "confidence": 0.95
+                "confidence": 0.95,
             }
         ]
 
@@ -207,7 +205,7 @@ class TestAlertManager:
             "positive_count": 0,
             "negative_count": 1,
             "neutral_count": 0,
-            "total_count": 1
+            "total_count": 1,
         }
 
         with patch.object(alert_manager, "send_alert") as mock_send:
@@ -222,11 +220,7 @@ class TestAlertManager:
         mock_response.status_code = 200
         alert_manager.slack_client.send = Mock(return_value=mock_response)
 
-        alert = {
-            "type": "test",
-            "message": "Test message",
-            "data": {}
-        }
+        alert = {"type": "test", "message": "Test message", "data": {}}
 
         result = alert_manager._send_slack_alert(alert)
 
@@ -240,11 +234,7 @@ class TestAlertManager:
         mock_response.status_code = 500
         alert_manager.slack_client.send = Mock(return_value=mock_response)
 
-        alert = {
-            "type": "test",
-            "message": "Test message",
-            "data": {}
-        }
+        alert = {"type": "test", "message": "Test message", "data": {}}
 
         result = alert_manager._send_slack_alert(alert)
 
@@ -254,11 +244,13 @@ class TestAlertManager:
         """Test retrieving alert history."""
         # Add some alerts
         for i in range(15):
-            alert_manager.alert_history.append({
-                "type": f"test_{i}",
-                "message": f"Test message {i}",
-                "timestamp": f"2025-01-09T{i:02d}:00:00Z"
-            })
+            alert_manager.alert_history.append(
+                {
+                    "type": f"test_{i}",
+                    "message": f"Test message {i}",
+                    "timestamp": f"2025-01-09T{i:02d}:00:00Z",
+                }
+            )
 
         history = alert_manager.get_alert_history(limit=5)
 

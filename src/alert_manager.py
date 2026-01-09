@@ -13,7 +13,11 @@ logger = logging.getLogger(__name__)
 class AlertManager:
     """Manages alerts and notifications for sentiment changes."""
 
-    def __init__(self, slack_webhook_url: Optional[str] = None, alert_config: Optional[Dict[str, Any]] = None):
+    def __init__(
+        self,
+        slack_webhook_url: Optional[str] = None,
+        alert_config: Optional[Dict[str, Any]] = None,
+    ):
         """
         Initialize alert manager.
 
@@ -22,15 +26,15 @@ class AlertManager:
             alert_config: Configuration for alert thresholds and behavior
         """
         self.slack_webhook_url = slack_webhook_url
-        self.slack_client = WebhookClient(slack_webhook_url) if slack_webhook_url else None
+        self.slack_client = (
+            WebhookClient(slack_webhook_url) if slack_webhook_url else None
+        )
         self.alert_config = alert_config or {}
         self.alert_history: List[Dict[str, Any]] = []
         logger.info("Alert manager initialized")
 
     def check_and_send_alerts(
-        self,
-        sentiment_results: List[Dict[str, Any]],
-        aggregate: Dict[str, Any]
+        self, sentiment_results: List[Dict[str, Any]], aggregate: Dict[str, Any]
     ) -> None:
         """
         Check sentiment results and send alerts if thresholds are met.
@@ -49,13 +53,19 @@ class AlertManager:
         # Check for highly negative tweets
         negative_threshold = self.alert_config.get("negative_score_threshold", -0.7)
         for result in sentiment_results:
-            if result.get("score", 0) <= negative_threshold and result.get("confidence", 0) >= 0.7:
+            if (
+                result.get("score", 0) <= negative_threshold
+                and result.get("confidence", 0) >= 0.7
+            ):
                 alerts.append(self._create_tweet_alert(result, "negative"))
 
         # Check for highly positive tweets
         positive_threshold = self.alert_config.get("positive_score_threshold", 0.7)
         for result in sentiment_results:
-            if result.get("score", 0) >= positive_threshold and result.get("confidence", 0) >= 0.7:
+            if (
+                result.get("score", 0) >= positive_threshold
+                and result.get("confidence", 0) >= 0.7
+            ):
                 alerts.append(self._create_tweet_alert(result, "positive"))
 
         # Send alerts
@@ -75,10 +85,7 @@ class AlertManager:
         logger.info(f"Sending alert: {alert['type']}")
 
         # Log alert
-        self.alert_history.append({
-            **alert,
-            "timestamp": datetime.utcnow().isoformat()
-        })
+        self.alert_history.append({**alert, "timestamp": datetime.utcnow().isoformat()})
 
         # Send to Slack if configured
         if self.slack_client:
@@ -91,10 +98,7 @@ class AlertManager:
         """Send alert to Slack."""
         try:
             message = self._format_slack_message(alert)
-            response = self.slack_client.send(
-                text=alert["message"],
-                blocks=message
-            )
+            response = self.slack_client.send(text=alert["message"], blocks=message)
 
             if response.status_code == 200:
                 logger.info("Slack alert sent successfully")
@@ -114,32 +118,20 @@ class AlertManager:
                 "type": "header",
                 "text": {
                     "type": "plain_text",
-                    "text": f"🚨 Sentiment Alert: {alert['type'].upper()}"
-                }
+                    "text": f"🚨 Sentiment Alert: {alert['type'].upper()}",
+                },
             },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": alert["message"]
-                }
-            }
+            {"type": "section", "text": {"type": "mrkdwn", "text": alert["message"]}},
         ]
 
         # Add data fields
         if alert.get("data"):
             fields = []
             for key, value in alert["data"].items():
-                fields.append({
-                    "type": "mrkdwn",
-                    "text": f"*{key}:*\n{value}"
-                })
+                fields.append({"type": "mrkdwn", "text": f"*{key}:*\n{value}"})
 
             if fields:
-                blocks.append({
-                    "type": "section",
-                    "fields": fields
-                })
+                blocks.append({"type": "section", "fields": fields})
 
         # Add divider
         blocks.append({"type": "divider"})
@@ -163,10 +155,12 @@ class AlertManager:
                 "Negative": aggregate["negative_count"],
                 "Neutral": aggregate["neutral_count"],
                 "Avg Score": f"{aggregate['average_score']:.2f}",
-            }
+            },
         }
 
-    def _create_tweet_alert(self, result: Dict[str, Any], alert_type: str) -> Dict[str, Any]:
+    def _create_tweet_alert(
+        self, result: Dict[str, Any], alert_type: str
+    ) -> Dict[str, Any]:
         """Create alert for individual tweet."""
         emoji = "🔥" if alert_type == "positive" else "⚠️"
 
@@ -182,7 +176,7 @@ class AlertManager:
                 "Confidence": f"{result['confidence']:.2f}",
                 "Sentiment": result["sentiment"],
                 "Tweet ID": result["tweet_id"],
-            }
+            },
         }
 
     def get_alert_history(self, limit: int = 10) -> List[Dict[str, Any]]:

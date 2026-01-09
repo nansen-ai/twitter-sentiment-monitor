@@ -17,17 +17,35 @@ logger = logging.getLogger(__name__)
 # Constants for validation
 SENTIMENTS = ["POSITIVE", "NEGATIVE", "NEUTRAL", "MIXED"]
 INTENTS = [
-    "PRAISE", "FEATURE_REQUEST", "COMPLAINT", "QUESTION", "GENERAL_MENTION",
-    "COMPETITIVE_COMPARISON", "AIRDROP_FUD", "SCAM_ACCUSATION",
-    "SUBSCRIPTION_COMPLAINT", "EXECUTION_COMPLAINT", "AFFILIATE_VIOLATION", "SPAM"
+    "PRAISE",
+    "FEATURE_REQUEST",
+    "COMPLAINT",
+    "QUESTION",
+    "GENERAL_MENTION",
+    "COMPETITIVE_COMPARISON",
+    "AIRDROP_FUD",
+    "SCAM_ACCUSATION",
+    "SUBSCRIPTION_COMPLAINT",
+    "EXECUTION_COMPLAINT",
+    "AFFILIATE_VIOLATION",
+    "SPAM",
 ]
 PRODUCTS = [
-    "nansen_mobile", "season2_rewards", "nansen_trading", "ai_insights", "nansen_points"
+    "nansen_mobile",
+    "season2_rewards",
+    "nansen_trading",
+    "ai_insights",
+    "nansen_points",
 ]
 URGENCY_LEVELS = ["LOW", "MEDIUM", "HIGH"]
 STRATEGIC_CATEGORIES = [
-    "STRATEGIC_WIN", "ADOPTION_SIGNAL", "CRITICAL_FUD", "AFFILIATE_VIOLATION",
-    "EXECUTION_ISSUE", "ROUTINE_NEGATIVE", "NEUTRAL_MENTION"
+    "STRATEGIC_WIN",
+    "ADOPTION_SIGNAL",
+    "CRITICAL_FUD",
+    "AFFILIATE_VIOLATION",
+    "EXECUTION_ISSUE",
+    "ROUTINE_NEGATIVE",
+    "NEUTRAL_MENTION",
 ]
 
 # Pricing for Claude Sonnet 4.5 (per million tokens)
@@ -92,10 +110,7 @@ Your mission: Identify strategic wins, adoption signals, and critical reputation
         logger.info(f"SentimentAnalyzer initialized with model: {self.model}")
 
     def analyze_tweets(
-        self,
-        tweets: List[Dict],
-        batch_size: int = 15,
-        use_cache: bool = True
+        self, tweets: List[Dict], batch_size: int = 15, use_cache: bool = True
     ) -> List[Dict]:
         """
         Analyze sentiment for a list of tweets with comprehensive multi-product analysis.
@@ -119,7 +134,9 @@ Your mission: Identify strategic wins, adoption signals, and critical reputation
             logger.warning("No tweets provided for analysis")
             return []
 
-        logger.info(f"Starting analysis of {len(tweets)} tweets in batches of {batch_size}")
+        logger.info(
+            f"Starting analysis of {len(tweets)} tweets in batches of {batch_size}"
+        )
 
         # Load cache if enabled
         cache = self._load_cache() if use_cache else {}
@@ -130,16 +147,26 @@ Your mission: Identify strategic wins, adoption signals, and critical reputation
         results = []
 
         for tweet in tweets:
-            tweet_id = tweet.get('tweet_id')
-            if use_cache and tweet_id in cache and self._is_cache_valid(cache[tweet_id]):
+            tweet_id = tweet.get("tweet_id")
+            if (
+                use_cache
+                and tweet_id in cache
+                and self._is_cache_valid(cache[tweet_id])
+            ):
                 # Use cached result
-                cached_analysis = cache[tweet_id]['analysis']
-                results.append({
-                    'tweet_id': tweet_id,
-                    'original_tweet': tweet,
-                    'analysis': cached_analysis,
-                    'api_cost': {'input_tokens': 0, 'output_tokens': 0, 'estimated_cost_usd': 0.0}
-                })
+                cached_analysis = cache[tweet_id]["analysis"]
+                results.append(
+                    {
+                        "tweet_id": tweet_id,
+                        "original_tweet": tweet,
+                        "analysis": cached_analysis,
+                        "api_cost": {
+                            "input_tokens": 0,
+                            "output_tokens": 0,
+                            "estimated_cost_usd": 0.0,
+                        },
+                    }
+                )
                 cache_hits += 1
             else:
                 uncached_tweets.append(tweet)
@@ -154,7 +181,9 @@ Your mission: Identify strategic wins, adoption signals, and critical reputation
 
         # Process uncached tweets in batches
         num_batches = (len(uncached_tweets) + batch_size - 1) // batch_size
-        logger.info(f"Processing {len(uncached_tweets)} uncached tweets in {num_batches} batches")
+        logger.info(
+            f"Processing {len(uncached_tweets)} uncached tweets in {num_batches} batches"
+        )
 
         batch_results = []
         strategic_wins = 0
@@ -162,10 +191,12 @@ Your mission: Identify strategic wins, adoption signals, and critical reputation
         affiliate_violations = 0
 
         for i in range(0, len(uncached_tweets), batch_size):
-            batch = uncached_tweets[i:i + batch_size]
+            batch = uncached_tweets[i : i + batch_size]
             batch_num = (i // batch_size) + 1
 
-            logger.info(f"Analyzing batch {batch_num}/{num_batches} ({len(batch)} tweets)...")
+            logger.info(
+                f"Analyzing batch {batch_num}/{num_batches} ({len(batch)} tweets)..."
+            )
 
             batch_analysis = self._analyze_batch(batch)
 
@@ -175,29 +206,29 @@ Your mission: Identify strategic wins, adoption signals, and critical reputation
                 # Update cache
                 if use_cache:
                     for result in batch_analysis:
-                        cache[result['tweet_id']] = {
-                            'analysis': result['analysis'],
-                            'cached_at': datetime.utcnow().isoformat()
+                        cache[result["tweet_id"]] = {
+                            "analysis": result["analysis"],
+                            "cached_at": datetime.utcnow().isoformat(),
                         }
 
                 # Track strategic alerts
                 for result in batch_analysis:
-                    category = result['analysis'].get('strategic_category')
-                    if category == 'STRATEGIC_WIN':
+                    category = result["analysis"].get("strategic_category")
+                    if category == "STRATEGIC_WIN":
                         strategic_wins += 1
                         logger.info(
                             f"🎯 STRATEGIC_WIN detected: "
                             f"@{result['original_tweet'].get('author_username')} - "
                             f"{result['analysis'].get('summary', '')[:50]}..."
                         )
-                    elif category == 'CRITICAL_FUD':
+                    elif category == "CRITICAL_FUD":
                         critical_fuds += 1
                         logger.warning(
                             f"⚠️ CRITICAL_FUD: "
                             f"@{result['original_tweet'].get('author_username')} - "
                             f"{result['analysis'].get('summary', '')[:50]}..."
                         )
-                    elif category == 'AFFILIATE_VIOLATION':
+                    elif category == "AFFILIATE_VIOLATION":
                         affiliate_violations += 1
                         logger.warning(
                             f"🚨 AFFILIATE_VIOLATION: "
@@ -222,7 +253,9 @@ Your mission: Identify strategic wins, adoption signals, and critical reputation
         logger.info(f"Analysis Complete:")
         logger.info(f"  Total tweets analyzed: {len(results)}")
         logger.info(f"  Total cost: ${self.total_cost:.4f}")
-        logger.info(f"  Total tokens: {self.total_input_tokens:,} in / {self.total_output_tokens:,} out")
+        logger.info(
+            f"  Total tokens: {self.total_input_tokens:,} in / {self.total_output_tokens:,} out"
+        )
         logger.info(f"  Strategic Wins: {strategic_wins}")
         logger.info(f"  Critical FUDs: {critical_fuds}")
         logger.info(f"  Affiliate Violations: {affiliate_violations}")
@@ -253,7 +286,7 @@ Your mission: Identify strategic wins, adoption signals, and critical reputation
                     max_tokens=8192,
                     temperature=0.15,
                     system=self.SYSTEM_PROMPT,
-                    messages=[{"role": "user", "content": user_prompt}]
+                    messages=[{"role": "user", "content": user_prompt}],
                 )
 
                 # Extract tokens and calculate cost
@@ -279,19 +312,21 @@ Your mission: Identify strategic wins, adoption signals, and critical reputation
                     analysis = analyses[i] if i < len(analyses) else {}
                     validated_analysis = self._validate_analysis(analysis, tweet)
 
-                    results.append({
-                        'tweet_id': tweet.get('tweet_id'),
-                        'original_tweet': tweet,
-                        'analysis': {
-                            **validated_analysis,
-                            'analyzed_at': datetime.utcnow().isoformat()
-                        },
-                        'api_cost': {
-                            'input_tokens': input_tokens // len(tweets),
-                            'output_tokens': output_tokens // len(tweets),
-                            'estimated_cost_usd': cost / len(tweets)
+                    results.append(
+                        {
+                            "tweet_id": tweet.get("tweet_id"),
+                            "original_tweet": tweet,
+                            "analysis": {
+                                **validated_analysis,
+                                "analyzed_at": datetime.utcnow().isoformat(),
+                            },
+                            "api_cost": {
+                                "input_tokens": input_tokens // len(tweets),
+                                "output_tokens": output_tokens // len(tweets),
+                                "estimated_cost_usd": cost / len(tweets),
+                            },
                         }
-                    })
+                    )
 
                 return results
 
@@ -301,7 +336,7 @@ Your mission: Identify strategic wins, adoption signals, and critical reputation
 
                 # Check for rate limit (429)
                 if "429" in str(e) or "rate_limit" in str(e).lower():
-                    wait_time = min(2 ** retry_count, 60)  # Exponential backoff, max 60s
+                    wait_time = min(2**retry_count, 60)  # Exponential backoff, max 60s
                     logger.warning(
                         f"⏳ Rate limit exceeded. Retry {retry_count}/{max_retries}. "
                         f"Waiting {wait_time}s..."
@@ -311,7 +346,7 @@ Your mission: Identify strategic wins, adoption signals, and critical reputation
 
                 # Check for server errors (500, 502, 503)
                 if any(code in str(e) for code in ["500", "502", "503"]):
-                    wait_time = 2 ** retry_count  # Exponential backoff
+                    wait_time = 2**retry_count  # Exponential backoff
                     logger.warning(
                         f"⏳ Server error ({error_type}). Retry {retry_count}/{max_retries}. "
                         f"Waiting {wait_time}s..."
@@ -325,7 +360,7 @@ Your mission: Identify strategic wins, adoption signals, and critical reputation
                     return []
 
                 # Other errors - retry with backoff
-                wait_time = 2 ** retry_count
+                wait_time = 2**retry_count
                 logger.warning(
                     f"⚠️ Error analyzing batch ({error_type}): {e}. "
                     f"Retry {retry_count}/{max_retries}. Waiting {wait_time}s..."
@@ -514,18 +549,20 @@ NO MARKDOWN. PURE JSON ARRAY ONLY."""
         formatted = []
 
         for i, tweet in enumerate(tweets, 1):
-            engagement = tweet.get('engagement', {})
-            total_engagement = engagement.get('total', 0)
-            followers = tweet.get('author_followers', 0)
-            verified_badge = "✓" if tweet.get('is_verified', False) else ""
+            engagement = tweet.get("engagement", {})
+            total_engagement = engagement.get("total", 0)
+            followers = tweet.get("author_followers", 0)
+            verified_badge = "✓" if tweet.get("is_verified", False) else ""
 
-            formatted.append(f"""Tweet {i}:
+            formatted.append(
+                f"""Tweet {i}:
 Text: {tweet.get('text', '')}
 Author: @{tweet.get('author_username', 'unknown')} ({followers:,} followers) {verified_badge}
 Engagement: {engagement.get('likes', 0)} likes, {engagement.get('retweets', 0)} RTs, {engagement.get('replies', 0)} replies (Total: {total_engagement})
 URL: {tweet.get('url', '')}
 Created: {tweet.get('created_at', '')}
-""")
+"""
+            )
 
         return "\n".join(formatted)
 
@@ -543,8 +580,8 @@ Created: {tweet.get('created_at', '')}
             # Strip markdown fences if present
             cleaned = response_text.strip()
             if cleaned.startswith("```"):
-                cleaned = re.sub(r'^```(?:json)?\n?', '', cleaned)
-                cleaned = re.sub(r'\n?```$', '', cleaned)
+                cleaned = re.sub(r"^```(?:json)?\n?", "", cleaned)
+                cleaned = re.sub(r"\n?```$", "", cleaned)
 
             # Parse JSON
             analyses = json.loads(cleaned)
@@ -574,60 +611,75 @@ Created: {tweet.get('created_at', '')}
         """
         # Default values
         defaults = {
-            'sentiment': 'NEUTRAL',
-            'confidence': 50,
-            'intent': 'GENERAL_MENTION',
-            'product_mentions': [],
-            'themes': [],
-            'negative_patterns': [],
-            'critical_keywords': [],
-            'urgency': 'LOW',
-            'actionable': False,
-            'summary': tweet.get('text', '')[:100] + ('...' if len(tweet.get('text', '')) > 100 else ''),
-            'competitive_mentions': [],
-            'is_viral': False,
-            'is_influencer': False,
-            'strategic_category': 'NEUTRAL_MENTION'
+            "sentiment": "NEUTRAL",
+            "confidence": 50,
+            "intent": "GENERAL_MENTION",
+            "product_mentions": [],
+            "themes": [],
+            "negative_patterns": [],
+            "critical_keywords": [],
+            "urgency": "LOW",
+            "actionable": False,
+            "summary": tweet.get("text", "")[:100]
+            + ("..." if len(tweet.get("text", "")) > 100 else ""),
+            "competitive_mentions": [],
+            "is_viral": False,
+            "is_influencer": False,
+            "strategic_category": "NEUTRAL_MENTION",
         }
 
         # Merge with defaults
         validated = {**defaults, **analysis}
 
         # Validate sentiment
-        if validated['sentiment'] not in SENTIMENTS:
-            logger.warning(f"Invalid sentiment: {validated['sentiment']}, defaulting to NEUTRAL")
-            validated['sentiment'] = 'NEUTRAL'
+        if validated["sentiment"] not in SENTIMENTS:
+            logger.warning(
+                f"Invalid sentiment: {validated['sentiment']}, defaulting to NEUTRAL"
+            )
+            validated["sentiment"] = "NEUTRAL"
 
         # Validate intent
-        if validated['intent'] not in INTENTS:
-            logger.warning(f"Invalid intent: {validated['intent']}, defaulting to GENERAL_MENTION")
-            validated['intent'] = 'GENERAL_MENTION'
+        if validated["intent"] not in INTENTS:
+            logger.warning(
+                f"Invalid intent: {validated['intent']}, defaulting to GENERAL_MENTION"
+            )
+            validated["intent"] = "GENERAL_MENTION"
 
         # Validate strategic_category
-        if validated['strategic_category'] not in STRATEGIC_CATEGORIES:
-            logger.warning(f"Invalid strategic_category: {validated['strategic_category']}, defaulting to NEUTRAL_MENTION")
-            validated['strategic_category'] = 'NEUTRAL_MENTION'
+        if validated["strategic_category"] not in STRATEGIC_CATEGORIES:
+            logger.warning(
+                f"Invalid strategic_category: {validated['strategic_category']}, defaulting to NEUTRAL_MENTION"
+            )
+            validated["strategic_category"] = "NEUTRAL_MENTION"
 
         # Validate urgency
-        if validated['urgency'] not in URGENCY_LEVELS:
-            logger.warning(f"Invalid urgency: {validated['urgency']}, defaulting to LOW")
-            validated['urgency'] = 'LOW'
+        if validated["urgency"] not in URGENCY_LEVELS:
+            logger.warning(
+                f"Invalid urgency: {validated['urgency']}, defaulting to LOW"
+            )
+            validated["urgency"] = "LOW"
 
         # Ensure arrays are lists
-        for field in ['product_mentions', 'themes', 'negative_patterns', 'critical_keywords', 'competitive_mentions']:
+        for field in [
+            "product_mentions",
+            "themes",
+            "negative_patterns",
+            "critical_keywords",
+            "competitive_mentions",
+        ]:
             if not isinstance(validated[field], list):
                 validated[field] = []
 
         # Ensure booleans
-        validated['actionable'] = bool(validated['actionable'])
-        validated['is_viral'] = bool(validated['is_viral'])
-        validated['is_influencer'] = bool(validated['is_influencer'])
+        validated["actionable"] = bool(validated["actionable"])
+        validated["is_viral"] = bool(validated["is_viral"])
+        validated["is_influencer"] = bool(validated["is_influencer"])
 
         # Ensure confidence is int between 0-100
         try:
-            validated['confidence'] = max(0, min(100, int(validated['confidence'])))
+            validated["confidence"] = max(0, min(100, int(validated["confidence"])))
         except (ValueError, TypeError):
-            validated['confidence'] = 50
+            validated["confidence"] = 50
 
         return validated
 
@@ -652,7 +704,7 @@ Created: {tweet.get('created_at', '')}
             return {}
 
         try:
-            with open(self.cache_file, 'r') as f:
+            with open(self.cache_file, "r") as f:
                 cache = json.load(f)
             logger.debug(f"Loaded {len(cache)} items from cache")
             return cache
@@ -663,7 +715,7 @@ Created: {tweet.get('created_at', '')}
     def _save_cache(self, cache: Dict) -> None:
         """Save sentiment cache to file."""
         try:
-            with open(self.cache_file, 'w') as f:
+            with open(self.cache_file, "w") as f:
                 json.dump(cache, f, indent=2)
             logger.debug(f"Saved {len(cache)} items to cache")
         except Exception as e:
@@ -681,7 +733,7 @@ Created: {tweet.get('created_at', '')}
             True if cache is valid, False otherwise
         """
         try:
-            cached_at = datetime.fromisoformat(cache_item.get('cached_at', ''))
+            cached_at = datetime.fromisoformat(cache_item.get("cached_at", ""))
             age = datetime.utcnow() - cached_at
             return age.days < max_days
         except Exception:

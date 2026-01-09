@@ -25,7 +25,7 @@ def sample_tweet():
         "text": "Bitcoin is revolutionizing finance! Great news for crypto adoption.",
         "author_username": "cryptoenthusiast",
         "author_id": "user123",
-        "created_at": "2025-01-09T12:00:00Z"
+        "created_at": "2025-01-09T12:00:00Z",
     }
 
 
@@ -116,14 +116,20 @@ SCORE: -1.5
 CONFIDENCE: 0.9
 REASONING: Test"""
 
-        result_negative = sentiment_analyzer._parse_sentiment_response(response_negative)
+        result_negative = sentiment_analyzer._parse_sentiment_response(
+            response_negative
+        )
 
         assert result_negative["score"] == -1.0  # Clamped to min
 
     @patch("sentiment_analyzer.Anthropic")
-    def test_analyze_tweet_success(self, mock_anthropic, sentiment_analyzer, sample_tweet, mock_claude_response):
+    def test_analyze_tweet_success(
+        self, mock_anthropic, sentiment_analyzer, sample_tweet, mock_claude_response
+    ):
         """Test successful tweet analysis."""
-        sentiment_analyzer.client.messages.create = Mock(return_value=mock_claude_response)
+        sentiment_analyzer.client.messages.create = Mock(
+            return_value=mock_claude_response
+        )
 
         result = sentiment_analyzer.analyze_tweet(sample_tweet)
 
@@ -134,9 +140,13 @@ REASONING: Test"""
         assert result["author"] == sample_tweet["author_username"]
 
     @patch("sentiment_analyzer.Anthropic")
-    def test_analyze_tweet_api_error(self, mock_anthropic, sentiment_analyzer, sample_tweet):
+    def test_analyze_tweet_api_error(
+        self, mock_anthropic, sentiment_analyzer, sample_tweet
+    ):
         """Test tweet analysis with API error."""
-        sentiment_analyzer.client.messages.create = Mock(side_effect=Exception("API Error"))
+        sentiment_analyzer.client.messages.create = Mock(
+            side_effect=Exception("API Error")
+        )
 
         result = sentiment_analyzer.analyze_tweet(sample_tweet)
 
@@ -152,7 +162,7 @@ REASONING: Test"""
             mock_analyze.return_value = {
                 "sentiment": "positive",
                 "score": 0.7,
-                "confidence": 0.8
+                "confidence": 0.8,
             }
 
             results = sentiment_analyzer.analyze_batch(tweets)
@@ -189,7 +199,12 @@ REASONING: Test"""
         """Test aggregate sentiment with some errors."""
         results = [
             {"sentiment": "positive", "score": 0.8, "confidence": 0.9},
-            {"sentiment": "negative", "score": -0.6, "confidence": 0.8, "error": "API timeout"},
+            {
+                "sentiment": "negative",
+                "score": -0.6,
+                "confidence": 0.8,
+                "error": "API timeout",
+            },
             {"sentiment": "neutral", "score": 0.0, "confidence": 0.7},
         ]
 

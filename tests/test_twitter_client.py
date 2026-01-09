@@ -76,7 +76,9 @@ class TestTwitterClient:
         assert "from:VitalikButerin" in query
 
     @patch("twitter_client.tweepy.Client")
-    def test_search_recent_tweets_success(self, mock_tweepy_client, twitter_client, mock_tweet_response):
+    def test_search_recent_tweets_success(
+        self, mock_tweepy_client, twitter_client, mock_tweet_response
+    ):
         """Test successful tweet search."""
         mock_tweet, mock_user = mock_tweet_response
 
@@ -106,7 +108,9 @@ class TestTwitterClient:
         assert len(tweets) == 0
 
     @patch("twitter_client.tweepy.Client")
-    def test_search_recent_tweets_with_since_id(self, mock_tweepy_client, twitter_client):
+    def test_search_recent_tweets_with_since_id(
+        self, mock_tweepy_client, twitter_client
+    ):
         """Test tweet search with since_id parameter."""
         mock_response = Mock()
         mock_response.data = []
@@ -119,7 +123,9 @@ class TestTwitterClient:
         assert call_args[1]["since_id"] == "123456"
 
     @patch("twitter_client.tweepy.Client")
-    def test_get_user_tweets_success(self, mock_tweepy_client, twitter_client, mock_tweet_response):
+    def test_get_user_tweets_success(
+        self, mock_tweepy_client, twitter_client, mock_tweet_response
+    ):
         """Test successful user tweet retrieval."""
         mock_tweet, mock_user = mock_tweet_response
 

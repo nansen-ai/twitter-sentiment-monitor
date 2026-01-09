@@ -15,26 +15,42 @@ from dotenv import load_dotenv
 logger = logging.getLogger(__name__)
 
 # Validation constants
-ALLOWED_SENTIMENTS = ['POSITIVE', 'NEGATIVE', 'NEUTRAL', 'MIXED']
+ALLOWED_SENTIMENTS = ["POSITIVE", "NEGATIVE", "NEUTRAL", "MIXED"]
 ALLOWED_INTENTS = [
-    'PRAISE', 'FEATURE_REQUEST', 'COMPLAINT', 'QUESTION', 'GENERAL_MENTION',
-    'COMPETITIVE_COMPARISON', 'AIRDROP_FUD', 'SCAM_ACCUSATION',
-    'SUBSCRIPTION_COMPLAINT', 'EXECUTION_COMPLAINT', 'AFFILIATE_VIOLATION', 'SPAM'
+    "PRAISE",
+    "FEATURE_REQUEST",
+    "COMPLAINT",
+    "QUESTION",
+    "GENERAL_MENTION",
+    "COMPETITIVE_COMPARISON",
+    "AIRDROP_FUD",
+    "SCAM_ACCUSATION",
+    "SUBSCRIPTION_COMPLAINT",
+    "EXECUTION_COMPLAINT",
+    "AFFILIATE_VIOLATION",
+    "SPAM",
 ]
-ALLOWED_PRODUCTS = ['nansen_mobile', 'season2_rewards', 'nansen_trading', 'ai_insights', 'nansen_points']
-ALLOWED_URGENCY = ['LOW', 'MEDIUM', 'HIGH']
+ALLOWED_PRODUCTS = [
+    "nansen_mobile",
+    "season2_rewards",
+    "nansen_trading",
+    "ai_insights",
+    "nansen_points",
+]
+ALLOWED_URGENCY = ["LOW", "MEDIUM", "HIGH"]
 
 # Regex patterns
-URL_PATTERN = re.compile(r'https?://\S+')
-MENTION_PATTERN = re.compile(r'@\w+')
-HASHTAG_PATTERN = re.compile(r'#\w+')
+URL_PATTERN = re.compile(r"https?://\S+")
+MENTION_PATTERN = re.compile(r"@\w+")
+HASHTAG_PATTERN = re.compile(r"#\w+")
 
 
 # ============================================================================
 # Configuration Loading
 # ============================================================================
 
-def load_config(config_path: str = 'config/config.yaml') -> Dict:
+
+def load_config(config_path: str = "config/config.yaml") -> Dict:
     """
     Load YAML configuration file.
 
@@ -59,11 +75,11 @@ def load_config(config_path: str = 'config/config.yaml') -> Dict:
         raise FileNotFoundError(f"Configuration file not found: {config_path}")
 
     try:
-        with open(config_file, 'r') as f:
+        with open(config_file, "r") as f:
             config = yaml.safe_load(f)
 
         # Validate required sections
-        required_sections = ['twitter', 'sentiment', 'alerts']
+        required_sections = ["twitter", "sentiment", "alerts"]
         missing = [section for section in required_sections if section not in config]
 
         if missing:
@@ -95,13 +111,13 @@ def load_env() -> bool:
 
     # Required variables
     required_vars = {
-        'X_API_BEARER_TOKEN': 'Twitter/X API bearer token',
-        'ANTHROPIC_API_KEY': 'Anthropic Claude API key',
+        "X_API_BEARER_TOKEN": "Twitter/X API bearer token",
+        "ANTHROPIC_API_KEY": "Anthropic Claude API key",
     }
 
     # At least one Slack method required
-    slack_webhook = os.getenv('SLACK_WEBHOOK_URL')
-    slack_bot = os.getenv('SLACK_BOT_TOKEN')
+    slack_webhook = os.getenv("SLACK_WEBHOOK_URL")
+    slack_bot = os.getenv("SLACK_BOT_TOKEN")
 
     missing = []
     present = []
@@ -116,17 +132,21 @@ def load_env() -> bool:
 
     # Check Slack credentials
     if not slack_webhook and not slack_bot:
-        missing.append("SLACK_WEBHOOK_URL or SLACK_BOT_TOKEN (Slack notification credentials)")
+        missing.append(
+            "SLACK_WEBHOOK_URL or SLACK_BOT_TOKEN (Slack notification credentials)"
+        )
     else:
         if slack_webhook:
-            present.append('SLACK_WEBHOOK_URL')
+            present.append("SLACK_WEBHOOK_URL")
             logger.debug("✓ SLACK_WEBHOOK_URL is set")
         if slack_bot:
-            present.append('SLACK_BOT_TOKEN')
+            present.append("SLACK_BOT_TOKEN")
             logger.debug("✓ SLACK_BOT_TOKEN is set")
 
     if missing:
-        error_msg = "Missing required environment variables:\n" + "\n".join(f"  - {var}" for var in missing)
+        error_msg = "Missing required environment variables:\n" + "\n".join(
+            f"  - {var}" for var in missing
+        )
         logger.error(error_msg)
         raise ValueError(error_msg)
 
@@ -138,7 +158,8 @@ def load_env() -> bool:
 # Logging Setup
 # ============================================================================
 
-def setup_logging(log_level: str = 'INFO', log_file: Optional[str] = None) -> None:
+
+def setup_logging(log_level: str = "INFO", log_file: Optional[str] = None) -> None:
     """
     Configure Python logging with console and optional file handlers.
 
@@ -161,8 +182,8 @@ def setup_logging(log_level: str = 'INFO', log_file: Optional[str] = None) -> No
     root_logger.setLevel(level)
 
     # Format
-    log_format = '[%(asctime)s] %(levelname)s - %(name)s - %(message)s'
-    date_format = '%Y-%m-%d %H:%M:%S'
+    log_format = "[%(asctime)s] %(levelname)s - %(name)s - %(message)s"
+    date_format = "%Y-%m-%d %H:%M:%S"
     formatter = logging.Formatter(log_format, datefmt=date_format)
 
     # Console handler
@@ -186,6 +207,7 @@ def setup_logging(log_level: str = 'INFO', log_file: Optional[str] = None) -> No
 # ============================================================================
 # Cost Calculation
 # ============================================================================
+
 
 def calculate_cost(input_tokens: int, output_tokens: int) -> float:
     """
@@ -214,6 +236,7 @@ def calculate_cost(input_tokens: int, output_tokens: int) -> float:
 # Text Processing
 # ============================================================================
 
+
 def sanitize_text(text: str) -> str:
     """
     Remove extra whitespace and newlines from text.
@@ -229,14 +252,14 @@ def sanitize_text(text: str) -> str:
         'Hello world !'
     """
     # Replace newlines with spaces
-    text = text.replace('\n', ' ').replace('\r', ' ')
+    text = text.replace("\n", " ").replace("\r", " ")
     # Collapse multiple spaces
-    text = re.sub(r'\s+', ' ', text)
+    text = re.sub(r"\s+", " ", text)
     # Strip leading/trailing spaces
     return text.strip()
 
 
-def truncate_text(text: str, max_length: int, suffix: str = '...') -> str:
+def truncate_text(text: str, max_length: int, suffix: str = "...") -> str:
     """
     Smart truncation at word boundaries.
 
@@ -263,7 +286,7 @@ def truncate_text(text: str, max_length: int, suffix: str = '...') -> str:
 
     # Find last space before truncate point
     truncated = text[:truncate_at]
-    last_space = truncated.rfind(' ')
+    last_space = truncated.rfind(" ")
 
     if last_space > 0:
         truncated = truncated[:last_space]
@@ -285,12 +308,13 @@ def remove_urls(text: str) -> str:
         >>> remove_urls("Check out https://example.com for more info")
         'Check out  for more info'
     """
-    return URL_PATTERN.sub('', text)
+    return URL_PATTERN.sub("", text)
 
 
 # ============================================================================
 # Number Formatting
 # ============================================================================
+
 
 def format_number(num: int) -> str:
     """
@@ -345,6 +369,7 @@ def format_percentage(value: float, decimal_places: int = 1) -> str:
 # Date/Time Utilities
 # ============================================================================
 
+
 def parse_twitter_timestamp(timestamp: str) -> str:
     """
     Convert Twitter ISO timestamp to readable format.
@@ -360,8 +385,8 @@ def parse_twitter_timestamp(timestamp: str) -> str:
         'Jan 09, 2025 at 2:30 PM UTC'
     """
     try:
-        dt = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
-        return dt.strftime('%b %d, %Y at %-I:%M %p UTC')
+        dt = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+        return dt.strftime("%b %d, %Y at %-I:%M %p UTC")
     except Exception as e:
         logger.warning(f"Failed to parse timestamp '{timestamp}': {e}")
         return timestamp
@@ -417,6 +442,7 @@ def get_datetime_range(hours: int) -> Tuple[datetime, datetime]:
 # Data Validation
 # ============================================================================
 
+
 def is_spam(tweet: Dict) -> bool:
     """
     Basic spam detection heuristics.
@@ -439,7 +465,7 @@ def is_spam(tweet: Dict) -> bool:
         >>> is_spam(tweet)
         True
     """
-    text = tweet.get('text', '')
+    text = tweet.get("text", "")
 
     # Count hashtags
     hashtags = len(HASHTAG_PATTERN.findall(text))
@@ -457,7 +483,7 @@ def is_spam(tweet: Dict) -> bool:
         return True
 
     # Check for repeated characters (5+ in a row)
-    if re.search(r'(.)\1{4,}', text):
+    if re.search(r"(.)\1{4,}", text):
         return True
 
     # Check for excessive caps (>70% uppercase)
@@ -487,7 +513,13 @@ def validate_tweet_structure(tweet: Dict) -> bool:
         >>> validate_tweet_structure(tweet)
         True
     """
-    required_fields = ['tweet_id', 'text', 'author_username', 'created_at', 'engagement']
+    required_fields = [
+        "tweet_id",
+        "text",
+        "author_username",
+        "created_at",
+        "engagement",
+    ]
 
     for field in required_fields:
         if field not in tweet:
@@ -495,7 +527,7 @@ def validate_tweet_structure(tweet: Dict) -> bool:
             return False
 
     # Validate engagement is dict
-    if not isinstance(tweet['engagement'], dict):
+    if not isinstance(tweet["engagement"], dict):
         logger.warning("engagement field must be a dictionary")
         return False
 
@@ -505,6 +537,7 @@ def validate_tweet_structure(tweet: Dict) -> bool:
 # ============================================================================
 # Engagement Calculations
 # ============================================================================
+
 
 def calculate_engagement_rate(tweet: Dict) -> float:
     """
@@ -523,8 +556,8 @@ def calculate_engagement_rate(tweet: Dict) -> float:
         >>> calculate_engagement_rate(tweet)
         1.0
     """
-    total_engagement = tweet.get('engagement', {}).get('total', 0)
-    followers = tweet.get('author_followers', 0)
+    total_engagement = tweet.get("engagement", {}).get("total", 0)
+    followers = tweet.get("author_followers", 0)
 
     if followers == 0:
         return 0.0
@@ -549,18 +582,19 @@ def calculate_total_engagement(tweet: Dict) -> int:
         >>> calculate_total_engagement(tweet)
         20
     """
-    engagement = tweet.get('engagement', {})
+    engagement = tweet.get("engagement", {})
     return (
-        engagement.get('likes', 0) +
-        engagement.get('retweets', 0) +
-        engagement.get('replies', 0) +
-        engagement.get('quotes', 0)
+        engagement.get("likes", 0)
+        + engagement.get("retweets", 0)
+        + engagement.get("replies", 0)
+        + engagement.get("quotes", 0)
     )
 
 
 # ============================================================================
 # File Operations
 # ============================================================================
+
 
 def save_json(data: Dict, filepath: str, pretty: bool = True) -> None:
     """
@@ -579,7 +613,7 @@ def save_json(data: Dict, filepath: str, pretty: bool = True) -> None:
         ensure_directory(os.path.dirname(filepath))
 
         # Write JSON
-        with open(filepath, 'w') as f:
+        with open(filepath, "w") as f:
             if pretty:
                 json.dump(data, f, indent=2)
             else:
@@ -611,7 +645,7 @@ def load_json(filepath: str) -> Dict:
         return {}
 
     try:
-        with open(filepath, 'r') as f:
+        with open(filepath, "r") as f:
             return json.load(f)
     except json.JSONDecodeError as e:
         logger.error(f"Invalid JSON in {filepath}: {e}")
@@ -639,7 +673,8 @@ def ensure_directory(directory: str) -> None:
 # Cleanup Utilities
 # ============================================================================
 
-def cleanup_old_files(directory: str, days: int, pattern: str = '*') -> int:
+
+def cleanup_old_files(directory: str, days: int, pattern: str = "*") -> int:
     """
     Remove files older than specified days.
 
@@ -664,7 +699,7 @@ def cleanup_old_files(directory: str, days: int, pattern: str = '*') -> int:
 
     for filepath in dir_path.glob(pattern):
         # Skip .gitkeep files
-        if filepath.name == '.gitkeep':
+        if filepath.name == ".gitkeep":
             continue
 
         # Skip directories
@@ -712,6 +747,7 @@ def get_file_age_days(filepath: str) -> int:
 # URL Helpers
 # ============================================================================
 
+
 def build_twitter_url(username: str, tweet_id: str) -> str:
     """
     Build Twitter URL from username and tweet ID.
@@ -751,6 +787,7 @@ def build_slack_link(url: str, text: str) -> str:
 # ============================================================================
 # Statistics Helpers
 # ============================================================================
+
 
 def calculate_average(numbers: List[float]) -> float:
     """
@@ -818,7 +855,9 @@ def calculate_weighted_average(values: List[float], weights: List[float]) -> flo
         81.0
     """
     if len(values) != len(weights):
-        raise ValueError(f"Length mismatch: {len(values)} values, {len(weights)} weights")
+        raise ValueError(
+            f"Length mismatch: {len(values)} values, {len(weights)} weights"
+        )
 
     if not values:
         return 0.0
@@ -834,6 +873,7 @@ def calculate_weighted_average(values: List[float], weights: List[float]) -> flo
 # ============================================================================
 # Data Structure Helpers
 # ============================================================================
+
 
 def safe_get(dictionary: Dict, key: str, default: Any = None) -> Any:
     """
@@ -854,7 +894,7 @@ def safe_get(dictionary: Dict, key: str, default: Any = None) -> Any:
         >>> safe_get(data, 'analysis.missing', 'N/A')
         'N/A'
     """
-    keys = key.split('.')
+    keys = key.split(".")
     value = dictionary
 
     for k in keys:
@@ -901,4 +941,3 @@ def merge_dicts(dict1: Dict, dict2: Dict) -> Dict:
 # ============================================================================
 
 import time
-

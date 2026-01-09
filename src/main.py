@@ -29,16 +29,13 @@ def setup_logging(log_level: str, log_file: str) -> None:
     date_format = "%Y-%m-%d %H:%M:%S"
 
     # Set up handlers
-    handlers = [
-        logging.FileHandler(log_file),
-        logging.StreamHandler(sys.stdout)
-    ]
+    handlers = [logging.FileHandler(log_file), logging.StreamHandler(sys.stdout)]
 
     logging.basicConfig(
         level=getattr(logging, log_level.upper(), logging.INFO),
         format=log_format,
         datefmt=date_format,
-        handlers=handlers
+        handlers=handlers,
     )
 
 
@@ -56,10 +53,7 @@ class SentimentMonitor:
         self.config = ConfigLoader(config_path)
 
         # Setup logging
-        setup_logging(
-            self.config.get_log_level(),
-            self.config.get_log_file()
-        )
+        setup_logging(self.config.get_log_level(), self.config.get_log_file())
         self.logger = logging.getLogger(__name__)
         self.logger.info("Initializing Sentiment Monitor")
 
@@ -67,8 +61,7 @@ class SentimentMonitor:
         self.twitter_client = TwitterClient(self.config.twitter_bearer_token)
         self.sentiment_analyzer = SentimentAnalyzer(self.config.anthropic_api_key)
         self.alert_manager = AlertManager(
-            self.config.slack_webhook_url,
-            self.config.get_alert_config()
+            self.config.slack_webhook_url, self.config.get_alert_config()
         )
 
         self.last_tweet_id: Optional[str] = None
@@ -101,7 +94,9 @@ class SentimentMonitor:
             self.logger.info("Received interrupt signal, shutting down")
             self.stop()
         except Exception as e:
-            self.logger.error(f"Unexpected error in monitoring loop: {e}", exc_info=True)
+            self.logger.error(
+                f"Unexpected error in monitoring loop: {e}", exc_info=True
+            )
             self.stop()
 
     def _monitoring_cycle(self, keywords: list, accounts: list) -> None:
@@ -137,9 +132,7 @@ class SentimentMonitor:
         if keywords or accounts:
             query = self.twitter_client.build_search_query(keywords, accounts)
             tweets = self.twitter_client.search_recent_tweets(
-                query=query,
-                max_results=100,
-                since_id=self.last_tweet_id
+                query=query, max_results=100, since_id=self.last_tweet_id
             )
             all_tweets.extend(tweets)
 
