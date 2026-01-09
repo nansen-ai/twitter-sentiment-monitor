@@ -1,0 +1,543 @@
+[
+  {
+    "tweet_id": "2009556815970021455",
+    "original_tweet": {
+      "tweet_id": "2009556815970021455",
+      "text": "@100xDarren @nansen_ai $DXP presale done. TGE is coming.\n@dexrp_io\n#XRPLedger\n\nhttps://t.co/a0HnFSMD6Z",
+      "author_username": "my00026",
+      "author_name": "M Y",
+      "created_at": "2026-01-09T09:24:15+00:00",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0,
+        "quotes": 0,
+        "total": 0
+      },
+      "url": "https://twitter.com/my00026/status/2009556815970021455",
+      "is_verified": false,
+      "author_followers": 67,
+      "mentioned_keywords": [
+        "nansen_ai"
+      ]
+    },
+    "analysis": {
+      "sentiment": "NEUTRAL",
+      "confidence": 70,
+      "intent": "GENERAL_MENTION",
+      "product_mentions": [],
+      "themes": [
+        "airdrop_expectations"
+      ],
+      "negative_patterns": [
+        "token_speculation"
+      ],
+      "critical_keywords": [
+        "TGE"
+      ],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "User mentioning Nansen in context of DXP token presale and TGE announcement",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 1,
+      "analyzed_at": "2026-01-09T09:26:20.028894"
+    },
+    "api_cost": {
+      "input_tokens": 365,
+      "output_tokens": 165,
+      "estimated_cost_usd": 0.0035730000000000002
+    }
+  },
+  {
+    "tweet_id": "2009555337867567404",
+    "original_tweet": {
+      "tweet_id": "2009555337867567404",
+      "text": "Arkada\u015flar, her zaman i\u00e7in kazanan a\u011flar gelecek vaadeder. Y\u0131l\u0131n ilk haftas\u0131nda @nansen_ai verilerine g\u00f6re @trondao t\u00fcm a\u011flar\u0131 geride b\u0131rakarak en \u00e7ok fee geliri elde eden a\u011f oldu. \n\nKontrol : https://t.co/fkLRtxrSK3\n\n1. Tron : 6.35M \n2. Solana : 4.78M \n3. Ethereum : 2.86M\n4. BNB https://t.co/MidKrRzqqJ",
+      "author_username": "BilgiKripto1",
+      "author_name": "Bilgi Kripto",
+      "created_at": "2026-01-09T09:18:22+00:00",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0,
+        "quotes": 0,
+        "total": 0
+      },
+      "url": "https://twitter.com/BilgiKripto1/status/2009555337867567404",
+      "is_verified": false,
+      "author_followers": 8686,
+      "mentioned_keywords": [
+        "nansen_ai"
+      ]
+    },
+    "analysis": {
+      "sentiment": "POSITIVE",
+      "confidence": 85,
+      "intent": "GENERAL_MENTION",
+      "product_mentions": [],
+      "themes": [
+        "trust_security"
+      ],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "User citing Nansen data showing Tron leading in fee revenue across blockchain networks",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "ADOPTION_SIGNAL",
+      "tweet_number": 2,
+      "analyzed_at": "2026-01-09T09:26:20.028912"
+    },
+    "api_cost": {
+      "input_tokens": 365,
+      "output_tokens": 165,
+      "estimated_cost_usd": 0.0035730000000000002
+    }
+  },
+  {
+    "tweet_id": "2009554735473516654",
+    "original_tweet": {
+      "tweet_id": "2009554735473516654",
+      "text": "@tobific @Polymarket @extendedapp @opinionlabsxyz @variational_io @tradexyz @HyperliquidX @base @nansen_ai @AbstractChain @edgeX_exchange @pacifica_fi @nadoHQ @predictdotfun @KaitoAI @MetaMask @Rabby_io @opensea @infinex @Pumpfun https://t.co/rjaD3ukaKc code for Pacifica, get 50% discount on fees and max boost  Closed beta access codes to join Pacifica. DON'T BE LATE TO JOIN THE UPCOMING BEST DEX :-  P146MA69MKVZX5X4\nDR4P2EFTW3KDNXJD\nGFJYZG1V0WMDB8Q1\nY6R8BT0ABGK5YC9V\nQTZKX1N7QXQ3D9GE",
+      "author_username": "Sandeep97759448",
+      "author_name": "Sandeep Thakur \ud83c\uddee\ud83c\uddf3",
+      "created_at": "2026-01-09T09:15:59+00:00",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0,
+        "quotes": 0,
+        "total": 0
+      },
+      "url": "https://twitter.com/Sandeep97759448/status/2009554735473516654",
+      "is_verified": false,
+      "author_followers": 176,
+      "mentioned_keywords": [
+        "nansen_ai",
+        "app",
+        "trade"
+      ]
+    },
+    "analysis": {
+      "sentiment": "NEUTRAL",
+      "confidence": 60,
+      "intent": "SPAM",
+      "product_mentions": [],
+      "themes": [],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "Spam tweet promoting Pacifica DEX discount codes with mass mentions including Nansen",
+      "competitive_mentions": [
+        "Polymarket",
+        "HyperliquidX",
+        "MetaMask",
+        "Rabby_io",
+        "opensea",
+        "Pumpfun"
+      ],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 3,
+      "analyzed_at": "2026-01-09T09:26:20.028917"
+    },
+    "api_cost": {
+      "input_tokens": 365,
+      "output_tokens": 165,
+      "estimated_cost_usd": 0.0035730000000000002
+    }
+  },
+  {
+    "tweet_id": "2009554686295380084",
+    "original_tweet": {
+      "tweet_id": "2009554686295380084",
+      "text": "@nansen_ai Congratulations team!",
+      "author_username": "basafish_russia",
+      "author_name": "BasaFishNetwork.Russia",
+      "created_at": "2026-01-09T09:15:47+00:00",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0,
+        "quotes": 0,
+        "total": 0
+      },
+      "url": "https://twitter.com/basafish_russia/status/2009554686295380084",
+      "is_verified": false,
+      "author_followers": 9,
+      "mentioned_keywords": [
+        "nansen_ai"
+      ]
+    },
+    "analysis": {
+      "sentiment": "POSITIVE",
+      "confidence": 90,
+      "intent": "PRAISE",
+      "product_mentions": [],
+      "themes": [],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "Simple congratulatory message to Nansen team",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 4,
+      "analyzed_at": "2026-01-09T09:26:20.028921"
+    },
+    "api_cost": {
+      "input_tokens": 365,
+      "output_tokens": 165,
+      "estimated_cost_usd": 0.0035730000000000002
+    }
+  },
+  {
+    "tweet_id": "2009553398949913024",
+    "original_tweet": {
+      "tweet_id": "2009553398949913024",
+      "text": "@tobific @Polymarket @extendedapp @opinionlabsxyz @variational_io @tradexyz @HyperliquidX @base @nansen_ai @AbstractChain @edgeX_exchange @pacifica_fi @nadoHQ @predictdotfun @KaitoAI @MetaMask @Rabby_io @opensea @infinex @Pumpfun OPENSEA D TIER\n\nLMFAO\n\nwe will meet at tge bro",
+      "author_username": "CryptoWolf_sol",
+      "author_name": "CryptoWolf",
+      "created_at": "2026-01-09T09:10:40+00:00",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0,
+        "quotes": 0,
+        "total": 0
+      },
+      "url": "https://twitter.com/CryptoWolf_sol/status/2009553398949913024",
+      "is_verified": false,
+      "author_followers": 1960,
+      "mentioned_keywords": [
+        "nansen_ai",
+        "app",
+        "trade"
+      ]
+    },
+    "analysis": {
+      "sentiment": "NEUTRAL",
+      "confidence": 65,
+      "intent": "GENERAL_MENTION",
+      "product_mentions": [],
+      "themes": [
+        "airdrop_expectations"
+      ],
+      "negative_patterns": [
+        "token_speculation"
+      ],
+      "critical_keywords": [
+        "tge"
+      ],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "User discussing OpenSea ranking and mentioning TGE in thread with multiple project mentions",
+      "competitive_mentions": [
+        "Polymarket",
+        "HyperliquidX",
+        "MetaMask",
+        "Rabby_io",
+        "opensea",
+        "Pumpfun"
+      ],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 5,
+      "analyzed_at": "2026-01-09T09:26:20.028927"
+    },
+    "api_cost": {
+      "input_tokens": 365,
+      "output_tokens": 165,
+      "estimated_cost_usd": 0.0035730000000000002
+    }
+  },
+  {
+    "tweet_id": "2009553378863657182",
+    "original_tweet": {
+      "tweet_id": "2009553378863657182",
+      "text": "@nansen_ai Retail excitement often follows whale distribution",
+      "author_username": "h4sh256",
+      "author_name": "HASH 256",
+      "created_at": "2026-01-09T09:10:35+00:00",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0,
+        "quotes": 0,
+        "total": 0
+      },
+      "url": "https://twitter.com/h4sh256/status/2009553378863657182",
+      "is_verified": false,
+      "author_followers": 78,
+      "mentioned_keywords": [
+        "nansen_ai"
+      ]
+    },
+    "analysis": {
+      "sentiment": "NEUTRAL",
+      "confidence": 75,
+      "intent": "GENERAL_MENTION",
+      "product_mentions": [],
+      "themes": [],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "User commenting on market dynamics regarding retail excitement following whale distribution",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 6,
+      "analyzed_at": "2026-01-09T09:26:20.028931"
+    },
+    "api_cost": {
+      "input_tokens": 365,
+      "output_tokens": 165,
+      "estimated_cost_usd": 0.0035730000000000002
+    }
+  },
+  {
+    "tweet_id": "2009553168607461833",
+    "original_tweet": {
+      "tweet_id": "2009553168607461833",
+      "text": "@naaoliveira @nansen_ai Yep!",
+      "author_username": "100xDarren",
+      "author_name": "100xDarren",
+      "created_at": "2026-01-09T09:09:45+00:00",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0,
+        "quotes": 0,
+        "total": 0
+      },
+      "url": "https://twitter.com/100xDarren/status/2009553168607461833",
+      "is_verified": false,
+      "author_followers": 20488,
+      "mentioned_keywords": [
+        "nansen_ai"
+      ]
+    },
+    "analysis": {
+      "sentiment": "NEUTRAL",
+      "confidence": 50,
+      "intent": "GENERAL_MENTION",
+      "product_mentions": [],
+      "themes": [],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "Simple affirmative reply in conversation mentioning Nansen",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 7,
+      "analyzed_at": "2026-01-09T09:26:20.028936"
+    },
+    "api_cost": {
+      "input_tokens": 365,
+      "output_tokens": 165,
+      "estimated_cost_usd": 0.0035730000000000002
+    }
+  },
+  {
+    "tweet_id": "2009552979083538455",
+    "original_tweet": {
+      "tweet_id": "2009552979083538455",
+      "text": "@100xDarren @nansen_ai $TIBBIR and $RECALL looking strong here",
+      "author_username": "naaoliveira",
+      "author_name": "frog.eth",
+      "created_at": "2026-01-09T09:09:00+00:00",
+      "engagement": {
+        "likes": 1,
+        "retweets": 0,
+        "replies": 1,
+        "quotes": 0,
+        "total": 2
+      },
+      "url": "https://twitter.com/naaoliveira/status/2009552979083538455",
+      "is_verified": false,
+      "author_followers": 1219,
+      "mentioned_keywords": [
+        "nansen_ai"
+      ]
+    },
+    "analysis": {
+      "sentiment": "NEUTRAL",
+      "confidence": 70,
+      "intent": "GENERAL_MENTION",
+      "product_mentions": [],
+      "themes": [],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "User mentioning TIBBIR and RECALL tokens looking strong in reply to Nansen-related conversation",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 8,
+      "analyzed_at": "2026-01-09T09:26:20.028939"
+    },
+    "api_cost": {
+      "input_tokens": 365,
+      "output_tokens": 165,
+      "estimated_cost_usd": 0.0035730000000000002
+    }
+  },
+  {
+    "tweet_id": "2009552580075212831",
+    "original_tweet": {
+      "tweet_id": "2009552580075212831",
+      "text": "@Chyan @nansen_ai \"The name is useless. The flip power is not.\" This is exactly the kind of contrarian play that makes millionaires. When the ticker makes you laugh but the on-chain data makes you buy \ud83d\ude80",
+      "author_username": "luka_usdt",
+      "author_name": "luka",
+      "created_at": "2026-01-09T09:07:25+00:00",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0,
+        "quotes": 0,
+        "total": 0
+      },
+      "url": "https://twitter.com/luka_usdt/status/2009552580075212831",
+      "is_verified": false,
+      "author_followers": 597,
+      "mentioned_keywords": [
+        "nansen_ai"
+      ]
+    },
+    "analysis": {
+      "sentiment": "POSITIVE",
+      "confidence": 80,
+      "intent": "PRAISE",
+      "product_mentions": [],
+      "themes": [
+        "roi_confirmation",
+        "trust_security"
+      ],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "User praising contrarian trading approach using on-chain data for investment decisions",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "STRATEGIC_WIN",
+      "tweet_number": 9,
+      "analyzed_at": "2026-01-09T09:26:20.028948"
+    },
+    "api_cost": {
+      "input_tokens": 365,
+      "output_tokens": 165,
+      "estimated_cost_usd": 0.0035730000000000002
+    }
+  },
+  {
+    "tweet_id": "2009552462014001580",
+    "original_tweet": {
+      "tweet_id": "2009552462014001580",
+      "text": "@gokorea2022 @nansen_ai @moonbirds \ubb38\ubc84\ub4dc\uac00 \ube44\uc0c1\ud560\ub77c \ud558\ub294\uad6c\ub098",
+      "author_username": "goyk38317",
+      "author_name": "go y.k \ud83c\udf0aRIVER. | \ud835\udd3drAI \ud83d\udc2cTermMax",
+      "created_at": "2026-01-09T09:06:57+00:00",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0,
+        "quotes": 0,
+        "total": 0
+      },
+      "url": "https://twitter.com/goyk38317/status/2009552462014001580",
+      "is_verified": false,
+      "author_followers": 2284,
+      "mentioned_keywords": [
+        "nansen_ai"
+      ]
+    },
+    "analysis": {
+      "sentiment": "NEUTRAL",
+      "confidence": 60,
+      "intent": "GENERAL_MENTION",
+      "product_mentions": [],
+      "themes": [],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "Korean language tweet about Moonbirds preparing to take off",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 10,
+      "analyzed_at": "2026-01-09T09:26:20.028952"
+    },
+    "api_cost": {
+      "input_tokens": 365,
+      "output_tokens": 165,
+      "estimated_cost_usd": 0.0035730000000000002
+    }
+  },
+  {
+    "tweet_id": "2009551508254400901",
+    "original_tweet": {
+      "tweet_id": "2009551508254400901",
+      "text": "@gokorea2022 @nansen_ai @moonbirds \ubb38\ubc84\ub4dc\ub85c \ub0ad\ub0ad\ud558\uac8c\uac00\uc57c\uc9c0\uc6a9",
+      "author_username": "Takeroko123",
+      "author_name": "YOM0_0 \ud83c\udf0aRIVER",
+      "created_at": "2026-01-09T09:03:09+00:00",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0,
+        "quotes": 0,
+        "total": 0
+      },
+      "url": "https://twitter.com/Takeroko123/status/2009551508254400901",
+      "is_verified": false,
+      "author_followers": 2607,
+      "mentioned_keywords": [
+        "nansen_ai"
+      ]
+    },
+    "analysis": {
+      "sentiment": "NEUTRAL",
+      "confidence": 60,
+      "intent": "GENERAL_MENTION",
+      "product_mentions": [],
+      "themes": [],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "Korean language tweet expressing optimism about Moonbirds",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 11,
+      "analyzed_at": "2026-01-09T09:26:20.028955"
+    },
+    "api_cost": {
+      "input_tokens": 365,
+      "output_tokens": 165,
+      "estimated_cost_usd": 0.0035730000000000002
+    }
+  }
+]

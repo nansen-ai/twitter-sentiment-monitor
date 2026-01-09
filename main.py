@@ -72,9 +72,9 @@ Examples:
 
     parser.add_argument(
         '--hours',
-        type=int,
+        type=float,
         default=24,
-        help='Hours to look back for tweets (default: 24)'
+        help='Hours to look back for tweets (default: 24, supports decimals like 0.5 for 30 mins)'
     )
 
     parser.add_argument(

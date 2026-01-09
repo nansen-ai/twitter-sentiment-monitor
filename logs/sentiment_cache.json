@@ -1,0 +1,264 @@
+{
+  "2009556815970021455": {
+    "analysis": {
+      "sentiment": "NEUTRAL",
+      "confidence": 70,
+      "intent": "GENERAL_MENTION",
+      "product_mentions": [],
+      "themes": [
+        "airdrop_expectations"
+      ],
+      "negative_patterns": [
+        "token_speculation"
+      ],
+      "critical_keywords": [
+        "TGE"
+      ],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "User mentioning Nansen in context of DXP token presale and TGE announcement",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 1,
+      "analyzed_at": "2026-01-09T09:26:20.028894"
+    },
+    "cached_at": "2026-01-09T09:26:20.028966"
+  },
+  "2009555337867567404": {
+    "analysis": {
+      "sentiment": "POSITIVE",
+      "confidence": 85,
+      "intent": "GENERAL_MENTION",
+      "product_mentions": [],
+      "themes": [
+        "trust_security"
+      ],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "User citing Nansen data showing Tron leading in fee revenue across blockchain networks",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "ADOPTION_SIGNAL",
+      "tweet_number": 2,
+      "analyzed_at": "2026-01-09T09:26:20.028912"
+    },
+    "cached_at": "2026-01-09T09:26:20.028967"
+  },
+  "2009554735473516654": {
+    "analysis": {
+      "sentiment": "NEUTRAL",
+      "confidence": 60,
+      "intent": "SPAM",
+      "product_mentions": [],
+      "themes": [],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "Spam tweet promoting Pacifica DEX discount codes with mass mentions including Nansen",
+      "competitive_mentions": [
+        "Polymarket",
+        "HyperliquidX",
+        "MetaMask",
+        "Rabby_io",
+        "opensea",
+        "Pumpfun"
+      ],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 3,
+      "analyzed_at": "2026-01-09T09:26:20.028917"
+    },
+    "cached_at": "2026-01-09T09:26:20.028968"
+  },
+  "2009554686295380084": {
+    "analysis": {
+      "sentiment": "POSITIVE",
+      "confidence": 90,
+      "intent": "PRAISE",
+      "product_mentions": [],
+      "themes": [],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "Simple congratulatory message to Nansen team",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 4,
+      "analyzed_at": "2026-01-09T09:26:20.028921"
+    },
+    "cached_at": "2026-01-09T09:26:20.028968"
+  },
+  "2009553398949913024": {
+    "analysis": {
+      "sentiment": "NEUTRAL",
+      "confidence": 65,
+      "intent": "GENERAL_MENTION",
+      "product_mentions": [],
+      "themes": [
+        "airdrop_expectations"
+      ],
+      "negative_patterns": [
+        "token_speculation"
+      ],
+      "critical_keywords": [
+        "tge"
+      ],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "User discussing OpenSea ranking and mentioning TGE in thread with multiple project mentions",
+      "competitive_mentions": [
+        "Polymarket",
+        "HyperliquidX",
+        "MetaMask",
+        "Rabby_io",
+        "opensea",
+        "Pumpfun"
+      ],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 5,
+      "analyzed_at": "2026-01-09T09:26:20.028927"
+    },
+    "cached_at": "2026-01-09T09:26:20.028969"
+  },
+  "2009553378863657182": {
+    "analysis": {
+      "sentiment": "NEUTRAL",
+      "confidence": 75,
+      "intent": "GENERAL_MENTION",
+      "product_mentions": [],
+      "themes": [],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "User commenting on market dynamics regarding retail excitement following whale distribution",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 6,
+      "analyzed_at": "2026-01-09T09:26:20.028931"
+    },
+    "cached_at": "2026-01-09T09:26:20.028970"
+  },
+  "2009553168607461833": {
+    "analysis": {
+      "sentiment": "NEUTRAL",
+      "confidence": 50,
+      "intent": "GENERAL_MENTION",
+      "product_mentions": [],
+      "themes": [],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "Simple affirmative reply in conversation mentioning Nansen",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 7,
+      "analyzed_at": "2026-01-09T09:26:20.028936"
+    },
+    "cached_at": "2026-01-09T09:26:20.028970"
+  },
+  "2009552979083538455": {
+    "analysis": {
+      "sentiment": "NEUTRAL",
+      "confidence": 70,
+      "intent": "GENERAL_MENTION",
+      "product_mentions": [],
+      "themes": [],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "User mentioning TIBBIR and RECALL tokens looking strong in reply to Nansen-related conversation",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 8,
+      "analyzed_at": "2026-01-09T09:26:20.028939"
+    },
+    "cached_at": "2026-01-09T09:26:20.028971"
+  },
+  "2009552580075212831": {
+    "analysis": {
+      "sentiment": "POSITIVE",
+      "confidence": 80,
+      "intent": "PRAISE",
+      "product_mentions": [],
+      "themes": [
+        "roi_confirmation",
+        "trust_security"
+      ],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "User praising contrarian trading approach using on-chain data for investment decisions",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "STRATEGIC_WIN",
+      "tweet_number": 9,
+      "analyzed_at": "2026-01-09T09:26:20.028948"
+    },
+    "cached_at": "2026-01-09T09:26:20.028972"
+  },
+  "2009552462014001580": {
+    "analysis": {
+      "sentiment": "NEUTRAL",
+      "confidence": 60,
+      "intent": "GENERAL_MENTION",
+      "product_mentions": [],
+      "themes": [],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "Korean language tweet about Moonbirds preparing to take off",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 10,
+      "analyzed_at": "2026-01-09T09:26:20.028952"
+    },
+    "cached_at": "2026-01-09T09:26:20.028972"
+  },
+  "2009551508254400901": {
+    "analysis": {
+      "sentiment": "NEUTRAL",
+      "confidence": 60,
+      "intent": "GENERAL_MENTION",
+      "product_mentions": [],
+      "themes": [],
+      "negative_patterns": [],
+      "critical_keywords": [],
+      "urgency": "LOW",
+      "actionable": false,
+      "summary": "Korean language tweet expressing optimism about Moonbirds",
+      "competitive_mentions": [],
+      "is_viral": false,
+      "is_influencer": false,
+      "strategic_category": "NEUTRAL_MENTION",
+      "tweet_number": 11,
+      "analyzed_at": "2026-01-09T09:26:20.028955"
+    },
+    "cached_at": "2026-01-09T09:26:20.028973"
+  }
+}

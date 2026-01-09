@@ -1,0 +1,178 @@
+{
+  "message_1": "\ud83d\udcca Nansen Daily Sentiment Report\n----------\nTotal Tweets: 11\n\u2022 Positive: 11 (100%)\n\u2022 Negative: 0 (0%)\n\nOverall Sentiment Score: 33/100 \u2192",
+  "message_2": "\ud83d\udcf1 KEY PRODUCT MENTIONS\n\u2022 Nansen Mobile: 0 tweets\n\u2022 Season 2 / Rewards: 0 tweets\n\u2022 Nansen Trading: 0 tweets\n\u2022 AI Insights: 0 tweets\n\u2022 Nansen Points: 0 tweets\n\n\u2705 TLDR positive sentiments\n\u2022 General (e.g., <https://twitter.com/naaoliveira/status/2009552979083538455|@naaoliveira> <https://twitter.com/Sandeep97759448/status/2009554735473516654|@Sandeep97759448> <https://twitter.com/basafish_russia/status/2009554686295380084|@basafish_russia>)\n\u2022 Speculation about Nansen token or airdrop farming (e.g., <https://twitter.com/my00026/status/2009556815970021455|@my00026> <https://twitter.com/CryptoWolf_sol/status/2009553398949913024|@CryptoWolf_sol>)\n\u2022 Platform reliability and security praise (e.g., <https://twitter.com/BilgiKripto1/status/2009555337867567404|@BilgiKripto1> <https://twitter.com/luka_usdt/status/2009552580075212831|@luka_usdt>)\n\u2022 Users confirming profitable trades and platform value (e.g., <https://twitter.com/luka_usdt/status/2009552580075212831|@luka_usdt>)\n\n\u26a0\ufe0f TLDR negative sentiments\nNo significant negative sentiments this period.\n\n\ud83c\udfaf STRATEGIC HIGHLIGHTS\n\u2022 1 Strategic Wins detected\n\u2022 1 Adoption Signals\n\n=====\n\n\u2705 Positive tweets (Total: 11)\n\u2022 <https://twitter.com/my00026/status/2009556815970021455|@my00026>\n\u2022 <https://twitter.com/BilgiKripto1/status/2009555337867567404|@BilgiKripto1>\n\u2022 <https://twitter.com/Sandeep97759448/status/2009554735473516654|@Sandeep97759448>\n\u2022 <https://twitter.com/basafish_russia/status/2009554686295380084|@basafish_russia>\n\u2022 <https://twitter.com/CryptoWolf_sol/status/2009553398949913024|@CryptoWolf_sol>\n\u2022 <https://twitter.com/h4sh256/status/2009553378863657182|@h4sh256>\n\u2022 <https://twitter.com/100xDarren/status/2009553168607461833|@100xDarren>\n\u2022 <https://twitter.com/naaoliveira/status/2009552979083538455|@naaoliveira>\n\u2022 <https://twitter.com/luka_usdt/status/2009552580075212831|@luka_usdt>\n\u2022 <https://twitter.com/goyk38317/status/2009552462014001580|@goyk38317>\n\u2022 <https://twitter.com/Takeroko123/status/2009551508254400901|@Takeroko123>\n\n\u26a0\ufe0f Negative tweets (Total: 0)\nNone\n\n\u2e3b\n\n\ud83d\udea8 NEGATIVE PHRASE ANALYSIS\n\nNo qualifying negative phrases detected in this period.",
+  "raw_data": {
+    "summary": {
+      "total_tweets": 11,
+      "positive_count": 11,
+      "negative_count": 0,
+      "positive_pct": 100.0,
+      "negative_pct": 0.0,
+      "sentiment_score": 33.3,
+      "trend": "STABLE"
+    },
+    "product_mentions": {
+      "nansen_mobile": 0,
+      "season2_rewards": 0,
+      "nansen_trading": 0,
+      "ai_insights": 0,
+      "nansen_points": 0
+    },
+    "positive_themes": [
+      {
+        "theme": "general",
+        "count": 7,
+        "description": "General",
+        "example_tweets": [
+          {
+            "url": "https://twitter.com/Sandeep97759448/status/2009554735473516654",
+            "username": "Sandeep97759448",
+            "text": "@tobific @Polymarket @extendedapp @opinionlabsxyz @variational_io @tradexyz @HyperliquidX @base @nansen_ai @AbstractChain @edgeX_exchange @pacifica_fi @nadoHQ @predictdotfun @KaitoAI @MetaMask @Rabby_io @opensea @infinex @Pumpfun https://t.co/rjaD3ukaKc code for Pacifica, get 50% discount on fees and max boost  Closed beta access codes to join Pacifica. DON'T BE LATE TO JOIN THE UPCOMING BEST DEX :-  P146MA69MKVZX5X4\nDR4P2EFTW3KDNXJD\nGFJYZG1V0WMDB8Q1\nY6R8BT0ABGK5YC9V\nQTZKX1N7QXQ3D9GE"
+          },
+          {
+            "url": "https://twitter.com/basafish_russia/status/2009554686295380084",
+            "username": "basafish_russia",
+            "text": "@nansen_ai Congratulations team!"
+          },
+          {
+            "url": "https://twitter.com/h4sh256/status/2009553378863657182",
+            "username": "h4sh256",
+            "text": "@nansen_ai Retail excitement often follows whale distribution"
+          }
+        ]
+      },
+      {
+        "theme": "airdrop_expectations",
+        "count": 2,
+        "description": "Speculation about Nansen token or airdrop farming",
+        "example_tweets": [
+          {
+            "url": "https://twitter.com/my00026/status/2009556815970021455",
+            "username": "my00026",
+            "text": "@100xDarren @nansen_ai $DXP presale done. TGE is coming.\n@dexrp_io\n#XRPLedger\n\nhttps://t.co/a0HnFSMD6Z"
+          },
+          {
+            "url": "https://twitter.com/CryptoWolf_sol/status/2009553398949913024",
+            "username": "CryptoWolf_sol",
+            "text": "@tobific @Polymarket @extendedapp @opinionlabsxyz @variational_io @tradexyz @HyperliquidX @base @nansen_ai @AbstractChain @edgeX_exchange @pacifica_fi @nadoHQ @predictdotfun @KaitoAI @MetaMask @Rabby_io @opensea @infinex @Pumpfun OPENSEA D TIER\n\nLMFAO\n\nwe will meet at tge bro"
+          }
+        ]
+      },
+      {
+        "theme": "trust_security",
+        "count": 2,
+        "description": "Platform reliability and security praise",
+        "example_tweets": [
+          {
+            "url": "https://twitter.com/BilgiKripto1/status/2009555337867567404",
+            "username": "BilgiKripto1",
+            "text": "Arkada\u015flar, her zaman i\u00e7in kazanan a\u011flar gelecek vaadeder. Y\u0131l\u0131n ilk haftas\u0131nda @nansen_ai verilerine g\u00f6re @trondao t\u00fcm a\u011flar\u0131 geride b\u0131rakarak en \u00e7ok fee geliri elde eden a\u011f oldu. \n\nKontrol : https://t.co/fkLRtxrSK3\n\n1. Tron : 6.35M \n2. Solana : 4.78M \n3. Ethereum : 2.86M\n4. BNB https://t.co/MidKrRzqqJ"
+          },
+          {
+            "url": "https://twitter.com/luka_usdt/status/2009552580075212831",
+            "username": "luka_usdt",
+            "text": "@Chyan @nansen_ai \"The name is useless. The flip power is not.\" This is exactly the kind of contrarian play that makes millionaires. When the ticker makes you laugh but the on-chain data makes you buy \ud83d\ude80"
+          }
+        ]
+      },
+      {
+        "theme": "roi_confirmation",
+        "count": 1,
+        "description": "Users confirming profitable trades and platform value",
+        "example_tweets": [
+          {
+            "url": "https://twitter.com/luka_usdt/status/2009552580075212831",
+            "username": "luka_usdt",
+            "text": "@Chyan @nansen_ai \"The name is useless. The flip power is not.\" This is exactly the kind of contrarian play that makes millionaires. When the ticker makes you laugh but the on-chain data makes you buy \ud83d\ude80"
+          }
+        ]
+      }
+    ],
+    "negative_themes": [],
+    "strategic_highlights": {
+      "strategic_wins": 1,
+      "adoption_signals": 1,
+      "critical_fud": 0,
+      "affiliate_violations": 0,
+      "influencer_mentions": 0
+    },
+    "negative_phrase_analysis": [],
+    "all_positive_tweets": [
+      {
+        "url": "https://twitter.com/my00026/status/2009556815970021455",
+        "username": "my00026",
+        "text": "@100xDarren @nansen_ai $DXP presale done. TGE is coming.\n@dexrp_io\n#XRPLedger\n\nhttps://t.co/a0HnFSMD6Z",
+        "engagement": 0
+      },
+      {
+        "url": "https://twitter.com/BilgiKripto1/status/2009555337867567404",
+        "username": "BilgiKripto1",
+        "text": "Arkada\u015flar, her zaman i\u00e7in kazanan a\u011flar gelecek vaadeder. Y\u0131l\u0131n ilk haftas\u0131nda @nansen_ai verilerine g\u00f6re @trondao t\u00fcm a\u011flar\u0131 geride b\u0131rakarak en \u00e7ok fee geliri elde eden a\u011f oldu. \n\nKontrol : https://t.co/fkLRtxrSK3\n\n1. Tron : 6.35M \n2. Solana : 4.78M \n3. Ethereum : 2.86M\n4. BNB https://t.co/MidKrRzqqJ",
+        "engagement": 0
+      },
+      {
+        "url": "https://twitter.com/Sandeep97759448/status/2009554735473516654",
+        "username": "Sandeep97759448",
+        "text": "@tobific @Polymarket @extendedapp @opinionlabsxyz @variational_io @tradexyz @HyperliquidX @base @nansen_ai @AbstractChain @edgeX_exchange @pacifica_fi @nadoHQ @predictdotfun @KaitoAI @MetaMask @Rabby_io @opensea @infinex @Pumpfun https://t.co/rjaD3ukaKc code for Pacifica, get 50% discount on fees and max boost  Closed beta access codes to join Pacifica. DON'T BE LATE TO JOIN THE UPCOMING BEST DEX :-  P146MA69MKVZX5X4\nDR4P2EFTW3KDNXJD\nGFJYZG1V0WMDB8Q1\nY6R8BT0ABGK5YC9V\nQTZKX1N7QXQ3D9GE",
+        "engagement": 0
+      },
+      {
+        "url": "https://twitter.com/basafish_russia/status/2009554686295380084",
+        "username": "basafish_russia",
+        "text": "@nansen_ai Congratulations team!",
+        "engagement": 0
+      },
+      {
+        "url": "https://twitter.com/CryptoWolf_sol/status/2009553398949913024",
+        "username": "CryptoWolf_sol",
+        "text": "@tobific @Polymarket @extendedapp @opinionlabsxyz @variational_io @tradexyz @HyperliquidX @base @nansen_ai @AbstractChain @edgeX_exchange @pacifica_fi @nadoHQ @predictdotfun @KaitoAI @MetaMask @Rabby_io @opensea @infinex @Pumpfun OPENSEA D TIER\n\nLMFAO\n\nwe will meet at tge bro",
+        "engagement": 0
+      },
+      {
+        "url": "https://twitter.com/h4sh256/status/2009553378863657182",
+        "username": "h4sh256",
+        "text": "@nansen_ai Retail excitement often follows whale distribution",
+        "engagement": 0
+      },
+      {
+        "url": "https://twitter.com/100xDarren/status/2009553168607461833",
+        "username": "100xDarren",
+        "text": "@naaoliveira @nansen_ai Yep!",
+        "engagement": 0
+      },
+      {
+        "url": "https://twitter.com/naaoliveira/status/2009552979083538455",
+        "username": "naaoliveira",
+        "text": "@100xDarren @nansen_ai $TIBBIR and $RECALL looking strong here",
+        "engagement": 2
+      },
+      {
+        "url": "https://twitter.com/luka_usdt/status/2009552580075212831",
+        "username": "luka_usdt",
+        "text": "@Chyan @nansen_ai \"The name is useless. The flip power is not.\" This is exactly the kind of contrarian play that makes millionaires. When the ticker makes you laugh but the on-chain data makes you buy \ud83d\ude80",
+        "engagement": 0
+      },
+      {
+        "url": "https://twitter.com/goyk38317/status/2009552462014001580",
+        "username": "goyk38317",
+        "text": "@gokorea2022 @nansen_ai @moonbirds \ubb38\ubc84\ub4dc\uac00 \ube44\uc0c1\ud560\ub77c \ud558\ub294\uad6c\ub098",
+        "engagement": 0
+      },
+      {
+        "url": "https://twitter.com/Takeroko123/status/2009551508254400901",
+        "username": "Takeroko123",
+        "text": "@gokorea2022 @nansen_ai @moonbirds \ubb38\ubc84\ub4dc\ub85c \ub0ad\ub0ad\ud558\uac8c\uac00\uc57c\uc9c0\uc6a9",
+        "engagement": 0
+      }
+    ],
+    "all_negative_tweets": []
+  },
+  "metadata": {
+    "generated_at": "2026-01-09T09:26:20.031404",
+    "date_range": "Last 0.5 hours",
+    "analysis_duration": 25.46,
+    "tweets_analyzed": 11,
+    "cache_hits": 0,
+    "total_api_cost": 0.039303000000000005
+  }
+}

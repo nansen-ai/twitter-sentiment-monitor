@@ -92,7 +92,7 @@ class TwitterClient:
         """
         Search for tweets mentioning Nansen or related keywords.
 
-        Search query: "(@nansen_ai OR points OR point OR trade OR trading OR mobile OR app) -from:nansen_ai -is:retweet"
+        Search query: "@nansen_ai OR (nansen (app OR mobile OR trade OR trading OR point OR points))"
 
         Args:
             hours: Number of hours to look back (default: 24)
@@ -103,8 +103,8 @@ class TwitterClient:
         # Calculate start time in ISO 8601 format
         start_time = (datetime.utcnow() - timedelta(hours=hours)).isoformat() + "Z"
 
-        # Build search query
-        query = "(@nansen_ai OR points OR point OR trade OR trading OR mobile OR app) -from:nansen_ai -is:retweet"
+        # Build search query - @nansen_ai mentions OR nansen + product keywords
+        query = "(@nansen_ai OR (nansen (app OR mobile OR trade OR trading OR point OR points))) -from:nansen_ai -is:retweet"
 
         logger.info(f"Starting tweet search for last {hours} hours")
         logger.info(f"Search query: {query}")
