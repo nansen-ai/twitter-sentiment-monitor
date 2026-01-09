@@ -3,216 +3,281 @@
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 import sys
+import json
 from pathlib import Path
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from sentiment_analyzer import SentimentAnalyzer
-
-
-@pytest.fixture
-def sentiment_analyzer():
-    """Create a sentiment analyzer instance for testing."""
-    return SentimentAnalyzer(api_key="test_api_key")
-
-
-@pytest.fixture
-def sample_tweet():
-    """Create a sample tweet for testing."""
-    return {
-        "id": "123456789",
-        "text": "Bitcoin is revolutionizing finance! Great news for crypto adoption.",
-        "author_username": "cryptoenthusiast",
-        "author_id": "user123",
-        "created_at": "2025-01-09T12:00:00Z",
-    }
-
-
-@pytest.fixture
-def mock_claude_response():
-    """Create mock Claude API response."""
-    mock_content = Mock()
-    mock_content.text = """SENTIMENT: positive
-SCORE: 0.8
-CONFIDENCE: 0.9
-REASONING: The tweet expresses strong optimism about Bitcoin and cryptocurrency adoption."""
-
-    mock_message = Mock()
-    mock_message.content = [mock_content]
-
-    return mock_message
-
 
 class TestSentimentAnalyzer:
     """Test cases for SentimentAnalyzer."""
 
-    def test_initialization(self, sentiment_analyzer):
+    @patch("sentiment_analyzer.Anthropic")
+    def test_initialization(self, mock_anthropic):
         """Test analyzer initialization."""
-        assert sentiment_analyzer.client is not None
-        assert sentiment_analyzer.model == "claude-3-5-sonnet-20241022"
+        from sentiment_analyzer import SentimentAnalyzer
 
-    def test_build_sentiment_prompt(self, sentiment_analyzer, sample_tweet):
-        """Test prompt building."""
-        prompt = sentiment_analyzer._build_sentiment_prompt(sample_tweet["text"])
+        analyzer = SentimentAnalyzer(api_key="test_api_key")
 
-        assert sample_tweet["text"] in prompt
-        assert "SENTIMENT:" in prompt
-        assert "SCORE:" in prompt
-        assert "CONFIDENCE:" in prompt
-
-    def test_parse_sentiment_response_positive(self, sentiment_analyzer):
-        """Test parsing positive sentiment response."""
-        response = """SENTIMENT: positive
-SCORE: 0.75
-CONFIDENCE: 0.85
-REASONING: Very optimistic tone about crypto"""
-
-        result = sentiment_analyzer._parse_sentiment_response(response)
-
-        assert result["sentiment"] == "positive"
-        assert result["score"] == 0.75
-        assert result["confidence"] == 0.85
-        assert "optimistic" in result["reasoning"].lower()
-
-    def test_parse_sentiment_response_negative(self, sentiment_analyzer):
-        """Test parsing negative sentiment response."""
-        response = """SENTIMENT: negative
-SCORE: -0.6
-CONFIDENCE: 0.8
-REASONING: Expresses concern about market crash"""
-
-        result = sentiment_analyzer._parse_sentiment_response(response)
-
-        assert result["sentiment"] == "negative"
-        assert result["score"] == -0.6
-        assert result["confidence"] == 0.8
-
-    def test_parse_sentiment_response_neutral(self, sentiment_analyzer):
-        """Test parsing neutral sentiment response."""
-        response = """SENTIMENT: neutral
-SCORE: 0.0
-CONFIDENCE: 0.7
-REASONING: Factual statement without clear sentiment"""
-
-        result = sentiment_analyzer._parse_sentiment_response(response)
-
-        assert result["sentiment"] == "neutral"
-        assert result["score"] == 0.0
-
-    def test_parse_sentiment_response_score_clamping(self, sentiment_analyzer):
-        """Test that scores are clamped to [-1, 1] range."""
-        response = """SENTIMENT: positive
-SCORE: 1.5
-CONFIDENCE: 0.9
-REASONING: Test"""
-
-        result = sentiment_analyzer._parse_sentiment_response(response)
-
-        assert result["score"] == 1.0  # Clamped to max
-
-        response_negative = """SENTIMENT: negative
-SCORE: -1.5
-CONFIDENCE: 0.9
-REASONING: Test"""
-
-        result_negative = sentiment_analyzer._parse_sentiment_response(
-            response_negative
-        )
-
-        assert result_negative["score"] == -1.0  # Clamped to min
+        assert analyzer.client is not None
+        assert analyzer.model == "claude-sonnet-4-5-20250929"
+        assert analyzer.api_key == "test_api_key"
 
     @patch("sentiment_analyzer.Anthropic")
-    def test_analyze_tweet_success(
-        self, mock_anthropic, sentiment_analyzer, sample_tweet, mock_claude_response
-    ):
-        """Test successful tweet analysis."""
-        sentiment_analyzer.client.messages.create = Mock(
-            return_value=mock_claude_response
-        )
+    def test_initialization_missing_api_key(self, mock_anthropic):
+        """Test analyzer initialization fails without API key."""
+        from sentiment_analyzer import SentimentAnalyzer
 
-        result = sentiment_analyzer.analyze_tweet(sample_tweet)
-
-        assert result["sentiment"] == "positive"
-        assert result["score"] == 0.8
-        assert result["confidence"] == 0.9
-        assert result["tweet_id"] == sample_tweet["id"]
-        assert result["author"] == sample_tweet["author_username"]
+        with patch.dict("os.environ", {}, clear=True):
+            with pytest.raises(ValueError, match="API key not provided"):
+                SentimentAnalyzer(api_key=None)
 
     @patch("sentiment_analyzer.Anthropic")
-    def test_analyze_tweet_api_error(
-        self, mock_anthropic, sentiment_analyzer, sample_tweet
-    ):
-        """Test tweet analysis with API error."""
-        sentiment_analyzer.client.messages.create = Mock(
-            side_effect=Exception("API Error")
-        )
+    def test_format_tweets_for_prompt(self, mock_anthropic):
+        """Test formatting tweets for the prompt."""
+        from sentiment_analyzer import SentimentAnalyzer
 
-        result = sentiment_analyzer.analyze_tweet(sample_tweet)
+        analyzer = SentimentAnalyzer(api_key="test_api_key")
 
-        assert result["sentiment"] == "neutral"
-        assert result["score"] == 0.0
-        assert "error" in result
-
-    def test_analyze_batch(self, sentiment_analyzer, sample_tweet):
-        """Test batch analysis."""
-        tweets = [sample_tweet, {**sample_tweet, "id": "987654321"}]
-
-        with patch.object(sentiment_analyzer, "analyze_tweet") as mock_analyze:
-            mock_analyze.return_value = {
-                "sentiment": "positive",
-                "score": 0.7,
-                "confidence": 0.8,
-            }
-
-            results = sentiment_analyzer.analyze_batch(tweets)
-
-            assert len(results) == 2
-            assert mock_analyze.call_count == 2
-
-    def test_get_aggregate_sentiment_empty(self, sentiment_analyzer):
-        """Test aggregate sentiment with empty results."""
-        aggregate = sentiment_analyzer.get_aggregate_sentiment([])
-
-        assert aggregate["average_score"] == 0.0
-        assert aggregate["total_count"] == 0
-        assert aggregate["positive_count"] == 0
-
-    def test_get_aggregate_sentiment_mixed(self, sentiment_analyzer):
-        """Test aggregate sentiment with mixed results."""
-        results = [
-            {"sentiment": "positive", "score": 0.8, "confidence": 0.9},
-            {"sentiment": "negative", "score": -0.6, "confidence": 0.8},
-            {"sentiment": "neutral", "score": 0.0, "confidence": 0.7},
-            {"sentiment": "positive", "score": 0.4, "confidence": 0.6},
-        ]
-
-        aggregate = sentiment_analyzer.get_aggregate_sentiment(results)
-
-        assert aggregate["total_count"] == 4
-        assert aggregate["positive_count"] == 2
-        assert aggregate["negative_count"] == 1
-        assert aggregate["neutral_count"] == 1
-        assert aggregate["average_score"] == pytest.approx(0.15, rel=0.01)
-
-    def test_get_aggregate_sentiment_with_errors(self, sentiment_analyzer):
-        """Test aggregate sentiment with some errors."""
-        results = [
-            {"sentiment": "positive", "score": 0.8, "confidence": 0.9},
+        tweets = [
             {
-                "sentiment": "negative",
-                "score": -0.6,
-                "confidence": 0.8,
-                "error": "API timeout",
+                "tweet_id": "123",
+                "text": "Nansen is great!",
+                "author_username": "user1",
+                "engagement": {
+                    "total": 100,
+                    "likes": 50,
+                    "retweets": 30,
+                    "replies": 20,
+                },
+                "author_followers": 1000,
             },
-            {"sentiment": "neutral", "score": 0.0, "confidence": 0.7},
+            {
+                "tweet_id": "456",
+                "text": "Love the mobile app",
+                "author_username": "user2",
+                "engagement": {"total": 50, "likes": 25, "retweets": 15, "replies": 10},
+                "author_followers": 500,
+            },
         ]
 
-        aggregate = sentiment_analyzer.get_aggregate_sentiment(results)
+        formatted = analyzer._format_tweets_for_prompt(tweets)
 
-        assert aggregate["total_count"] == 3
-        assert aggregate["error_count"] == 1
-        # Error entries should be excluded from score calculation
-        assert aggregate["positive_count"] == 1
-        assert aggregate["negative_count"] == 0  # Error entry not counted
-        assert aggregate["neutral_count"] == 1
+        # Check for tweet numbering format (Tweet 1:, Tweet 2:)
+        assert "Tweet 1:" in formatted
+        assert "Tweet 2:" in formatted
+        assert "Nansen is great!" in formatted
+        assert "user1" in formatted
+
+    @patch("sentiment_analyzer.Anthropic")
+    def test_calculate_cost(self, mock_anthropic):
+        """Test cost calculation."""
+        from sentiment_analyzer import SentimentAnalyzer
+
+        analyzer = SentimentAnalyzer(api_key="test_api_key")
+
+        # Test with known values
+        # Input: $3/MTok, Output: $15/MTok
+        cost = analyzer._calculate_cost(1000, 1000)
+
+        # 1000 input tokens = $0.003, 1000 output tokens = $0.015
+        expected = (1000 / 1_000_000 * 3.0) + (1000 / 1_000_000 * 15.0)
+        assert cost == pytest.approx(expected, rel=0.01)
+
+    @patch("sentiment_analyzer.Anthropic")
+    def test_validate_analysis_valid(self, mock_anthropic):
+        """Test validation of a valid analysis result."""
+        from sentiment_analyzer import SentimentAnalyzer
+
+        analyzer = SentimentAnalyzer(api_key="test_api_key")
+
+        tweet = {"tweet_id": "123", "text": "Test tweet"}
+        analysis = {
+            "sentiment": "POSITIVE",
+            "confidence": 85,
+            "intent": "PRAISE",
+            "urgency": "LOW",
+            "product_mentions": ["nansen_mobile"],
+            "themes": ["mobile_adoption"],
+            "negative_patterns": [],
+            "critical_keywords": [],
+            "strategic_category": "STRATEGIC_WIN",
+            "competitive_mentions": [],
+            "is_viral": False,
+            "is_influencer": False,
+            "actionable": False,
+            "summary": "User praising the mobile app",
+        }
+
+        result = analyzer._validate_analysis(analysis, tweet)
+
+        assert result["sentiment"] == "POSITIVE"
+        assert result["confidence"] == 85
+        assert result["intent"] == "PRAISE"
+
+    @patch("sentiment_analyzer.Anthropic")
+    def test_validate_analysis_invalid_sentiment(self, mock_anthropic):
+        """Test validation corrects invalid sentiment."""
+        from sentiment_analyzer import SentimentAnalyzer
+
+        analyzer = SentimentAnalyzer(api_key="test_api_key")
+
+        tweet = {"tweet_id": "123", "text": "Test tweet"}
+        analysis = {
+            "sentiment": "INVALID_SENTIMENT",
+            "confidence": 85,
+            "intent": "PRAISE",
+            "urgency": "LOW",
+            "product_mentions": [],
+            "themes": [],
+            "negative_patterns": [],
+            "critical_keywords": [],
+            "strategic_category": "NEUTRAL_MENTION",
+            "competitive_mentions": [],
+            "summary": "Test",
+        }
+
+        result = analyzer._validate_analysis(analysis, tweet)
+
+        # Should default to NEUTRAL for invalid sentiment
+        assert result["sentiment"] == "NEUTRAL"
+
+    @patch("sentiment_analyzer.Anthropic")
+    def test_validate_analysis_clamps_confidence(self, mock_anthropic):
+        """Test validation clamps confidence to valid range."""
+        from sentiment_analyzer import SentimentAnalyzer
+
+        analyzer = SentimentAnalyzer(api_key="test_api_key")
+
+        tweet = {"tweet_id": "123", "text": "Test tweet"}
+        analysis = {
+            "sentiment": "POSITIVE",
+            "confidence": 150,  # Invalid - should be clamped to 100
+            "intent": "PRAISE",
+            "urgency": "LOW",
+            "product_mentions": [],
+            "themes": [],
+            "negative_patterns": [],
+            "critical_keywords": [],
+            "strategic_category": "NEUTRAL_MENTION",
+            "competitive_mentions": [],
+            "summary": "Test",
+        }
+
+        result = analyzer._validate_analysis(analysis, tweet)
+
+        assert result["confidence"] == 100
+
+    @patch("sentiment_analyzer.Anthropic")
+    def test_parse_response_valid_json(self, mock_anthropic):
+        """Test parsing valid JSON response."""
+        from sentiment_analyzer import SentimentAnalyzer
+
+        analyzer = SentimentAnalyzer(api_key="test_api_key")
+
+        response_text = json.dumps(
+            [
+                {
+                    "tweet_id": "123",
+                    "sentiment": "POSITIVE",
+                    "confidence": 0.85,
+                    "primary_intent": "PRAISE",
+                    "urgency_level": "LOW",
+                    "products_mentioned": ["nansen_mobile"],
+                    "positive_themes": ["mobile_adoption"],
+                    "negative_themes": [],
+                    "strategic_category": "STRATEGIC_WIN",
+                    "key_phrases": ["great app"],
+                    "summary": "User praising the mobile app",
+                }
+            ]
+        )
+
+        result = analyzer._parse_response(response_text)
+
+        assert len(result) == 1
+        assert result[0]["tweet_id"] == "123"
+        assert result[0]["sentiment"] == "POSITIVE"
+
+    @patch("sentiment_analyzer.Anthropic")
+    def test_parse_response_with_code_block(self, mock_anthropic):
+        """Test parsing JSON response wrapped in code block."""
+        from sentiment_analyzer import SentimentAnalyzer
+
+        analyzer = SentimentAnalyzer(api_key="test_api_key")
+
+        response_text = """```json
+[
+    {
+        "tweet_id": "123",
+        "sentiment": "POSITIVE",
+        "confidence": 0.85,
+        "primary_intent": "PRAISE",
+        "urgency_level": "LOW",
+        "products_mentioned": [],
+        "positive_themes": [],
+        "negative_themes": [],
+        "strategic_category": "STRATEGIC_WIN",
+        "key_phrases": [],
+        "summary": "Test"
+    }
+]
+```"""
+
+        result = analyzer._parse_response(response_text)
+
+        assert len(result) == 1
+        assert result[0]["sentiment"] == "POSITIVE"
+
+    @patch("sentiment_analyzer.Anthropic")
+    def test_cache_operations(self, mock_anthropic):
+        """Test cache loading and saving."""
+        from sentiment_analyzer import SentimentAnalyzer
+        import tempfile
+        import os
+
+        analyzer = SentimentAnalyzer(api_key="test_api_key")
+
+        # Use temp file for cache
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as tmp:
+            tmp.write("{}")
+            tmp_path = tmp.name
+
+        try:
+            analyzer.cache_file = Path(tmp_path)
+
+            # Test loading empty cache
+            cache = analyzer._load_cache()
+            assert cache == {}
+
+            # Test saving cache
+            test_cache = {"tweet_123": {"sentiment": "POSITIVE"}}
+            analyzer._save_cache(test_cache)
+
+            # Test loading saved cache
+            loaded_cache = analyzer._load_cache()
+            assert "tweet_123" in loaded_cache
+        finally:
+            os.unlink(tmp_path)
+
+    @patch("sentiment_analyzer.Anthropic")
+    def test_is_cache_valid(self, mock_anthropic):
+        """Test cache validity checking."""
+        from sentiment_analyzer import SentimentAnalyzer
+        from datetime import datetime, timedelta
+
+        analyzer = SentimentAnalyzer(api_key="test_api_key")
+
+        # Recent cache entry - should be valid
+        recent_entry = {"cached_at": datetime.now().isoformat()}
+        assert analyzer._is_cache_valid(recent_entry, max_days=7) is True
+
+        # Old cache entry - should be invalid
+        old_date = datetime.now() - timedelta(days=10)
+        old_entry = {"cached_at": old_date.isoformat()}
+        assert analyzer._is_cache_valid(old_entry, max_days=7) is False
+
+        # Entry without cached_at - should be invalid
+        no_date_entry = {}
+        assert analyzer._is_cache_valid(no_date_entry, max_days=7) is False

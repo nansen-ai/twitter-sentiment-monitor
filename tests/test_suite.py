@@ -256,9 +256,10 @@ class TestTwitterClient(unittest.TestCase):
     @patch("twitter_client.tweepy.Client")
     def test_validate_credentials_success(self, mock_client):
         """Test successful credential validation."""
-        mock_me = Mock()
-        mock_me.data.username = "test_user"
-        self.client.client.get_me = Mock(return_value=mock_me)
+        mock_response = Mock()
+        mock_response.data = Mock()
+        mock_response.data.username = "X"
+        self.client.client.get_user = Mock(return_value=mock_response)
 
         result = self.client.validate_credentials()
         self.assertTrue(result)
@@ -266,7 +267,7 @@ class TestTwitterClient(unittest.TestCase):
     @patch("twitter_client.tweepy.Client")
     def test_validate_credentials_failure(self, mock_client):
         """Test failed credential validation."""
-        self.client.client.get_me = Mock(side_effect=Exception("Auth failed"))
+        self.client.client.get_user = Mock(side_effect=Exception("Auth failed"))
 
         result = self.client.validate_credentials()
         self.assertFalse(result)

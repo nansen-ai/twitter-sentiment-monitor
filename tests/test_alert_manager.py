@@ -36,7 +36,7 @@ def sample_sentiment_results():
     return [
         {
             "tweet_id": "123",
-            "text": "Bitcoin is amazing!",
+            "tweet_text": "Bitcoin is amazing!",
             "author": "user1",
             "sentiment": "positive",
             "score": 0.8,
@@ -44,7 +44,7 @@ def sample_sentiment_results():
         },
         {
             "tweet_id": "124",
-            "text": "Crypto market looking good",
+            "tweet_text": "Crypto market looking good",
             "author": "user2",
             "sentiment": "positive",
             "score": 0.6,
@@ -52,7 +52,7 @@ def sample_sentiment_results():
         },
         {
             "tweet_id": "125",
-            "text": "Market crash incoming",
+            "tweet_text": "Market crash incoming",
             "author": "user3",
             "sentiment": "negative",
             "score": -0.8,
